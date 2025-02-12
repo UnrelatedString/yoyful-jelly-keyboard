@@ -18,6 +18,7 @@ to generate this file without the comments in this block.
   , "exceptions"
   , "maybe"
   , "prelude"
+  , "web-cssom"
   , "web-dom"
   , "web-html"
   ]
