@@ -31,5 +31,5 @@ windowedMain win = do
   maybeBody <- document win >>= body
   -- TODO: maybe I could just make it create an empty body instead lmao
   into <- HTMLElement.toNode <$> maybe (throw "There's no body 😭😭😭") pure maybeBody
-  uhh <- createElement "?????" doc
+  uhh <- createElement "oh" doc
   appendChild (toNode uhh) into
