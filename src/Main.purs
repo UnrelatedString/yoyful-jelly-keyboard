@@ -13,7 +13,7 @@ import Web.HTML (window)
 import Web.HTML.Window (Window, document)
 import Web.HTML.HTMLDocument (body, toDocument)
 import Web.HTML.HTMLElement as HTMLElement
-import Web.DOM.Node (appendChild)
+import Web.DOM.Node (appendChild, setTextContent)
 import Web.DOM.Document (createElement)
 import Web.DOM.Element (toNode)
 
@@ -31,5 +31,9 @@ windowedMain win = do
   maybeBody <- document win >>= body
   -- TODO: maybe I could just make it create an empty body instead lmao
   into <- HTMLElement.toNode <$> maybe (throw "There's no body 😭😭😭") pure maybeBody
-  uhh <- createElement "oh" doc
-  appendChild (toNode uhh) into
+  kbRoot <- createElement "div" doc
+  appendChild (toNode kbRoot) into
+  setTextContent "please don't tell me <b>THIS</b> works. PLEASE. just let things be structurally self-validating aaaa" $ toNode kbRoot
+
+celebrateSuccess :: Effect Unit
+celebrateSuccess = log "🍾"
