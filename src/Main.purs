@@ -5,12 +5,17 @@ module Main (
 import Prelude
 
 import Data.Either (either) -- is this really not in Prelude???
+import Data.Maybe (maybe)
 import Effect (Effect)
 import Effect.Console (log, error, errorShow)
-import Effect.Exception (try, Error)
+import Effect.Exception (try, throw, Error)
 import Web.HTML (window)
 import Web.HTML.Window (Window, document)
-import Web.DOM.Document (createTextNode)
+import Web.HTML.HTMLDocument (body, toDocument)
+import Web.HTML.HTMLElement as HTMLElement
+import Web.DOM.Node (appendChild)
+import Web.DOM.Document (createElement)
+import Web.DOM.Element (toNode)
 
 main :: Effect Unit
 main = try window >>= either noWindow windowedMain
@@ -21,4 +26,10 @@ noWindow e = do
   error "This is meant to be run as a bookmarklet!"
 
 windowedMain :: Window -> Effect Unit
-windowedMain win = pure unit
+windowedMain win = do
+  doc <- toDocument <$> document win
+  maybeBody <- document win >>= body
+  -- TODO: maybe I could just make it create an empty body instead lmao
+  into <- HTMLElement.toNode <$> maybe (throw "There's no body 😭😭😭") pure maybeBody
+  uhh <- createElement "?????" doc
+  appendChild (toNode uhh) into

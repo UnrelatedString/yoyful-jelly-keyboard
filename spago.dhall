@@ -16,6 +16,7 @@ to generate this file without the comments in this block.
   , "effect"
   , "either"
   , "exceptions"
+  , "maybe"
   , "prelude"
   , "web-dom"
   , "web-html"
