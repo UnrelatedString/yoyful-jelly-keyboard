@@ -14,9 +14,11 @@ import Web.HTML.Window (Window, document)
 import Web.HTML.HTMLDocument (body, toDocument)
 import Web.HTML.HTMLElement as HTMLElement
 import Web.DOM.Node (Node, appendChild)
-import Web.DOM.Document (Document, createElement)
+import Web.DOM.Document (Document, createElement, createTextNode)
 import Web.DOM.Element (Element, toNode)
+import Web.DOM.Text as JFCThisLibraryReallyIsLowLevelHuh
 import Web.CSSOM.ElementCSSInlineStyle (style, fromHTMLElement)
+import Web.CSSOM.CSSStyleDeclaration (setProperty)
 
 main :: Effect Unit
 main = try window >>= either noWindow windowedMain
@@ -30,7 +32,7 @@ windowedMain :: Window -> Effect Unit
 windowedMain win = do
   doc <- toDocument <$> document win
   maybeBody <- document win >>= body
-  -- TODO: maybe I could just make it create an empty body instead lmao
+  -- TODO: maybe I should actually make it create an empty body instead?
   into <- HTMLElement.toNode <$> expect "There's no body 😭😭😭" maybeBody
   keyboard <- buildKeyboard doc
   appendChild (toNode keyboard) into
@@ -45,8 +47,11 @@ expect message = throw message `maybe` pure
 
 buildKeyboard :: Document -> Effect Element
 buildKeyboard doc = do
-  root <- createElement "div" doc
-  pure root
+  keyboard <- createElement "div" doc
+  let append = flip appendChild $ toNode keyboard
+  text <- createTextNode "keyboard go clicky clacky clicky clacky" doc
+  append $ JFCThisLibraryReallyIsLowLevelHuh.toNode text
+  pure keyboard
 
 styleKeyboard :: Element -> Effect Unit
 styleKeyboard keyboard = do
@@ -55,4 +60,6 @@ styleKeyboard keyboard = do
     "Failed to convert Web.DOM.Element to Web.HTML.HTMLElement. SOMEHOW. !?!?!?"
     literallyHowIsThisFallible
   css <- style $ fromHTMLElement htmlElement
+  -- wait am I going to have to inline style everything?? what about like. selectors. ???
+  setProperty "color" "white" css
   pure unit
