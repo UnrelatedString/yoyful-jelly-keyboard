@@ -1,6 +1,6 @@
-module Main (
-  main
-) where
+module Main
+  ( main
+  ) where
 
 import Prelude
 
@@ -13,12 +13,12 @@ import Web.HTML (window)
 import Web.HTML.Window (Window, document)
 import Web.HTML.HTMLDocument (body, toDocument)
 import Web.HTML.HTMLElement as HTMLElement
-import Web.DOM.Node (Node, appendChild)
 import Web.DOM.Document (Document, createElement, createTextNode)
-import Web.DOM.Element (Element, toNode)
-import Web.DOM.Text as JFCThisLibraryReallyIsLowLevelHuh
+import Web.DOM.Element (Element)
 import Web.CSSOM.ElementCSSInlineStyle (style, fromHTMLElement)
 import Web.CSSOM.CSSStyleDeclaration (setProperty)
+
+import Web.Nice (appendChild)
 
 main :: Effect Unit
 main = try window >>= either noWindow windowedMain
@@ -35,7 +35,7 @@ windowedMain win = do
   -- TODO: maybe I should actually make it create an empty body instead?
   into <- HTMLElement.toNode <$> expect "There's no body 😭😭😭" maybeBody
   keyboard <- buildKeyboard doc
-  appendChild (toNode keyboard) into
+  appendChild into keyboard
   styleKeyboard keyboard
   celebrateSuccess
 
@@ -48,9 +48,9 @@ expect message = throw message `maybe` pure
 buildKeyboard :: Document -> Effect Element
 buildKeyboard doc = do
   keyboard <- createElement "div" doc
-  let append = flip appendChild $ toNode keyboard
+  let append = appendChild keyboard
   text <- createTextNode "keyboard go clicky clacky clicky clacky" doc
-  append $ JFCThisLibraryReallyIsLowLevelHuh.toNode text
+  append text
   pure keyboard
 
 styleKeyboard :: Element -> Effect Unit
