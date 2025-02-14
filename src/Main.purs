@@ -7,6 +7,7 @@ import Prelude
 import Data.Either (either) -- is this really not in Prelude???
 import Data.Maybe (Maybe, maybe)
 import Effect (Effect)
+import Effect.Class (liftEffect)
 import Effect.Console (log, error, errorShow)
 import Effect.Exception (try, throw, Error)
 import Web.HTML (window)
@@ -19,7 +20,7 @@ import Web.CSSOM.ElementCSSInlineStyle (style, fromHTMLElement)
 import Web.CSSOM.CSSStyleDeclaration (CSSStyleDeclaration, setProperty)
 
 import Web.Nice.Node (appendChild)
-import Web.Nice.Builder (Builder, createElement, createText)
+import Web.Nice.Builder (Builder, runBuilder, createElement, createText)
 
 main :: Effect Unit
 main = try window >>= either noWindow windowedMain
@@ -35,7 +36,7 @@ windowedMain win = do
   maybeBody <- document win >>= body
   -- TODO: maybe I should actually make it create an empty body instead?
   into <- HTMLElement.toNode <$> expect "There's no body 😭😭😭" maybeBody
-  keyboard <- buildKeyboard doc
+  keyboard <- runBuilder doc buildKeyboard
   appendChild into keyboard
   celebrateSuccess
 
@@ -48,8 +49,8 @@ expect message = throw message `maybe` pure
 buildKeyboard :: Builder Element
 buildKeyboard = do
   keyboard <- createElement "div"
-  let append = appendChild keyboard
-  text <- createTextNode "keyboard go clicky clacky clicky clacky" doc
+  let append = liftEffect <<< appendChild keyboard
+  text <- createText "keyboard go clicky clacky clicky clacky"
   append text
   pure keyboard
 
