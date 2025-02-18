@@ -7,6 +7,7 @@ import Prelude
 import Data.Either (either) -- is this really not in Prelude???
 import Data.Maybe (Maybe, maybe, isJust)
 import Control.Alternative (guard)
+import Control.Bind (when)
 import Data.Traversable (traverse_)
 import Effect (Effect)
 import Effect.Class (liftEffect)
@@ -86,7 +87,9 @@ isTabPress event = isJust do
   guard $ type_ event == keydown -- because I do not trust this damn spaghetti API
   guard $ code kbevent == "Tab" -- whyyyyyy isn't this an enummmmmmmm I hate JS so much
 
+commitShortcutEdit :: Effect Unit -> HTMLElement.HTMLElement -> Effect Unit
+commitShortcutEdit edit elem = if isContentEditable elem then edit else error "not editable"
+
 handleKeyPress :: HTMLDocument -> Event -> Effect Unit
-handleKeyPress doc event = activeElement doc >>= traverse_ \elem -> do
-  -- and like I COULD even get the document out of the EventTarget instead but no. I won't sink that far. I hate this API so much
-  log "elem :3"
+handleKeyPress doc event = when isTabPress event $ activeElement doc >>= traverse_ \elem -> do
+  log "uhhh"
