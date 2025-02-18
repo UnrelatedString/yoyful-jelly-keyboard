@@ -33,13 +33,12 @@ main = try window >>= either noWindow windowedMain
 noWindow :: Error -> Effect Unit
 noWindow e = do
   errorShow e
-  error "This is meant to be run as a bookmarklet!"
+  error "This is meant to be run as a bookmarklet! Will not work if run without a window"
 
 windowedMain :: Window -> Effect Unit
 windowedMain win = do
   doc <- toDocument <$> document win
   maybeBody <- document win >>= body
-  -- TODO: maybe I should actually make it create an empty body instead?
   into <- HTMLElement.toNode <$> expect "There's no body 😭😭😭" maybeBody
   keyboard <- runBuilder doc buildKeyboard
   appendChild into keyboard
