@@ -5,7 +5,7 @@ module Main
 import Prelude
 
 import Data.Either (either) -- is this really not in Prelude???
-import Data.Maybe (Maybe, maybe)
+import Data.Maybe (Maybe, maybe, isJust)
 import Control.Alternative (guard)
 import Data.Foldable (sequence_)
 import Effect (Effect)
@@ -14,13 +14,13 @@ import Effect.Console (log, error, errorShow)
 import Effect.Exception (try, throw, Error)
 import Web.HTML (window)
 import Web.HTML.Window (Window, document, toEventTarget)
-import Web.HTML.HTMLDocument (body, toDocument)
+import Web.HTML.HTMLDocument (HTMLDocument, body, toDocument, activeElement)
 import Web.HTML.HTMLElement as HTMLElement
 import Web.DOM.Element (Element)
 import Web.CSSOM.ElementCSSInlineStyle (style, fromHTMLElement)
 import Web.CSSOM.CSSStyleDeclaration (CSSStyleDeclaration, setProperty)
 import Web.Event.Event (Event, target, type_)
-import Web.UIEvent.KeyboardEvent (fromEvent)
+import Web.UIEvent.KeyboardEvent (fromEvent, code)
 import Web.UIEvent.KeyboardEvent.EventTypes (keydown)
 import Web.Event.EventTarget (EventListener, eventListener, addEventListenerWithOptions)
 
@@ -71,7 +71,8 @@ inlineDecl elem = do
 -- Returns so it can be removed later if the keyboard is closed. 
 registerKeyHandler :: Window -> Effect EventListener
 registerKeyHandler target = do
-  listener <- eventListener handleKeyPress
+  doc <- document target -- ughh maybe this should just be a separate argument or even Builder ctx but this time it actually does have to be specifically HTMLDocument ughhhh
+  listener <- eventListener $ handleKeyPress doc
   addEventListenerWithOptions keydown listener {
       capture: true,
       once: false,
@@ -79,9 +80,13 @@ registerKeyHandler target = do
     } $ toEventTarget target
   pure listener
 
-handleKeyPress :: Event -> Effect Unit
-handleKeyPress event = sequence_ do 
+isTabPress :: Event -> Boolean
+isTabPress event = isJust do
   kbevent <- fromEvent event
   guard $ type_ event == keydown -- because I do not trust this damn spaghetti API
-  pure do
-    log "foo"
+  guard $ code kbevent == "Tab" -- whyyyyyy isn't this an enummmmmmmm I hate JS so much
+
+handleKeyPress :: HTMLDocument -> Event -> Effect Unit
+handleKeyPress doc event = activeElement doc >>= map \elem -> do
+  -- and like I COULD even get the document out of the EventTarget instead but no. I won't sink that far. I hate this API so much
+  log "elem :3"
