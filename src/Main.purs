@@ -87,6 +87,7 @@ isTabPress event = isJust do
   guard $ type_ event == keydown -- because I do not trust this damn spaghetti API
   guard $ code kbevent == "Tab" -- whyyyyyy isn't this an enummmmmmmm I hate JS so much
 
+-- only do this at the end if there's an actual shortcut because there are other things to tab for :P
 commitShortcutEdit :: Effect Unit -> HTMLElement.HTMLElement -> Effect Unit
 commitShortcutEdit edit elem = if isContentEditable elem then edit else error "not editable"
 
