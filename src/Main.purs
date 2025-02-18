@@ -14,7 +14,6 @@ import Web.HTML (window)
 import Web.HTML.Window (Window, document)
 import Web.HTML.HTMLDocument (body, toDocument)
 import Web.HTML.HTMLElement as HTMLElement
-import Web.DOM.Document (Document)
 import Web.DOM.Element (Element)
 import Web.CSSOM.ElementCSSInlineStyle (style, fromHTMLElement)
 import Web.CSSOM.CSSStyleDeclaration (CSSStyleDeclaration, setProperty)

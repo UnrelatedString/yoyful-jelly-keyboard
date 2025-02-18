@@ -1,5 +1,6 @@
 module Web.Nice.Builder
   ( Builder
+  , ContextT
   , runBuilder
   , createElement
   , createText
@@ -13,33 +14,35 @@ import Web.DOM.Document as DOM.Document
 import Web.DOM.Element (Element)
 import Web.DOM.Text (Text)
 
-data Builder a = Builder (DOM.Document.Document -> Effect a)
+data ContextT :: forall k. Type -> (k -> Type) -> k -> Type
+data ContextT c m a = ContextT (c -> m a)
+type Builder = ContextT DOM.Document.Document Effect
 
-instance Functor Builder where
-  map f (Builder a) = Builder $ map f <<< a
+instance Functor m => Functor (ContextT c m) where
+  map f (ContextT a) = ContextT $ map f <<< a
 
-instance Apply Builder where
-  apply (Builder f) (Builder a) = Builder \doc -> f doc <*> a doc
+instance Apply m => Apply (ContextT c m) where
+  apply (ContextT f) (ContextT a) = ContextT \doc -> f doc <*> a doc
 
-instance Applicative Builder where
-  pure = Builder <<< const <<< pure
+instance Applicative m => Applicative (ContextT c m) where
+  pure = ContextT <<< const <<< pure
 
-instance Bind Builder where
-  bind (Builder a) f = Builder \doc -> do
+instance Monad m => Bind (ContextT c m) where
+  bind (ContextT a) f = ContextT \doc -> do
     r1 <- a doc
-    let Builder r2 = f r1
+    let ContextT r2 = f r1
     r2 doc
 
-instance Monad Builder
+instance Monad m => Monad (ContextT c m)
 
-instance MonadEffect Builder where
-  liftEffect = Builder <<< const
+instance MonadEffect (ContextT c Effect) where
+  liftEffect = ContextT <<< const
 
 createElement :: String -> Builder Element
-createElement = Builder <<< DOM.Document.createElement
+createElement = ContextT <<< DOM.Document.createElement
 
 createText :: String -> Builder Text
-createText = Builder <<< DOM.Document.createTextNode
+createText = ContextT <<< DOM.Document.createTextNode
 
 runBuilder :: forall a. DOM.Document.Document -> Builder a -> Effect a
-runBuilder doc (Builder a) = a doc
+runBuilder doc (ContextT a) = a doc
