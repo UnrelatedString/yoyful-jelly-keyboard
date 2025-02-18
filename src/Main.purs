@@ -7,7 +7,7 @@ import Prelude
 import Data.Either (either) -- is this really not in Prelude???
 import Data.Maybe (Maybe, maybe, isJust)
 import Control.Alternative (guard)
-import Data.Foldable (sequence_)
+import Data.Traversable (traverse_)
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Effect.Console (log, error, errorShow)
@@ -87,6 +87,6 @@ isTabPress event = isJust do
   guard $ code kbevent == "Tab" -- whyyyyyy isn't this an enummmmmmmm I hate JS so much
 
 handleKeyPress :: HTMLDocument -> Event -> Effect Unit
-handleKeyPress doc event = activeElement doc >>= map \elem -> do
+handleKeyPress doc event = activeElement doc >>= traverse_ \elem -> do
   -- and like I COULD even get the document out of the EventTarget instead but no. I won't sink that far. I hate this API so much
   log "elem :3"
