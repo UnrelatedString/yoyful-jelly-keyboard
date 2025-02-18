@@ -22,16 +22,16 @@ instance Functor m => Functor (ContextT c m) where
   map f (ContextT a) = ContextT $ map f <<< a
 
 instance Apply m => Apply (ContextT c m) where
-  apply (ContextT f) (ContextT a) = ContextT \doc -> f doc <*> a doc
+  apply (ContextT f) (ContextT a) = ContextT \ctx -> f ctx <*> a ctx
 
 instance Applicative m => Applicative (ContextT c m) where
   pure = ContextT <<< const <<< pure
 
 instance Monad m => Bind (ContextT c m) where
-  bind (ContextT a) f = ContextT \doc -> do
-    r1 <- a doc
+  bind (ContextT a) f = ContextT \ctx -> do
+    r1 <- a ctx
     let ContextT r2 = f r1
-    r2 doc
+    r2 ctx
 
 instance Monad m => Monad (ContextT c m)
 
