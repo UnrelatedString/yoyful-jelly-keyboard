@@ -3,6 +3,8 @@ module Web.Nice.Selectable
   , toSelectable
   , selectionStart
   , selectionEnd
+  , selectingFrom
+  , setSelectingFrom
   ) where
 
 import Prelude
@@ -16,6 +18,7 @@ import Effect (Effect)
 import Web.HTML.HTMLTextAreaElement as TextArea
 import Web.HTML.HTMLInputElement as Input
 import Web.HTML.HTMLElement (HTMLElement)
+import Web.Nice.Node (textContent, setTextContent)
 
 data Selectable = TA TextArea.HTMLTextAreaElement
                 | I Input.HTMLInputElement
@@ -41,3 +44,11 @@ selectionStart (I e) = Input.selectionStart e
 selectionEnd :: Selectable -> Effect Int
 selectionEnd (TA e) = TextArea.selectionEnd e
 selectionEnd (I e) = Input.selectionEnd e
+
+selectingFrom :: Selectable -> Effect String
+selectingFrom (TA e) = textContent e
+selectingFrom (I e) = Input.value e
+
+setSelectingFrom :: String -> Selectable -> Effect Unit
+setSelectingFrom to (TA e) = setTextContent to e
+setSelectingFrom to (I e) = Input.setValue to e

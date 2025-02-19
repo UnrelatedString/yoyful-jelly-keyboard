@@ -3,6 +3,7 @@ module Web.Nice.Node
   , toNode
   , appendChild
   , textContent
+  , setTextContent
   ) where 
 
 import Prelude
@@ -14,6 +15,8 @@ import Web.DOM.Element as DOM.Element
 import Web.DOM.Text as DOM.Text
 import Web.HTML.HTMLElement as HTMLElement
 
+import Web.Nice.Elem
+
 class IsNode a where
   toNode :: a -> Node
 
@@ -23,6 +26,9 @@ appendChild parent child = DOM.Node.appendChild (toNode child) $ toNode parent
 
 textContent :: forall a. IsNode a => a -> Effect String
 textContent = DOM.Node.textContent <<< toNode
+
+setTextContent :: forall a. IsNode a => String -> a -> Effect Unit
+setTextContent to = DOM.Node.setTextContent to <<< toNode
 
 instance IsNode Node where
   toNode = identity
@@ -35,3 +41,6 @@ instance IsNode DOM.Text.Text where
 
 instance IsNode HTMLElement.HTMLElement where
   toNode = HTMLElement.toNode
+
+instance IsElem a => IsNode a where
+  toNode = toNode <<< toElem

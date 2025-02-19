@@ -9,7 +9,7 @@ import Data.Maybe (Maybe, maybe, isJust)
 import Data.String (splitAt)
 import Control.Alternative (guard)
 import Control.Bind (when)
-import Data.Traversable (traverse_)
+import Data.Traversable (traverse, traverse_)
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Effect.Console (log, error, errorShow)
@@ -26,7 +26,7 @@ import Web.UIEvent.KeyboardEvent (fromEvent, code)
 import Web.UIEvent.KeyboardEvent.EventTypes (keydown)
 import Web.Event.EventTarget (EventListener, eventListener, addEventListenerWithOptions)
 
-import Web.Nice.Node (appendChild, textContent)
+import Web.Nice.Node (appendChild)
 import Web.Nice.Builder (Builder, runBuilder, createElement, createText)
 import Web.Nice.Selectable (Selectable, toSelectable, selectionStart, selectionEnd)
 
@@ -91,8 +91,8 @@ isTabPress event = isJust do
 
 handleKeyPress :: HTMLDocument -> Event -> Effect Unit
 handleKeyPress doc event = when (isTabPress event) $
-  activeElement doc >>= traverse_ \elem -> toSelectable elem >>= traverse_ \sel -> do
-    text <- textContent elem
-    end <- selectionEnd sel
-    let {before: toConsider, after: suffix} = splitAt end text
-    log $ toConsider
+  activeElement doc >>= traverse toSelectable >>= traverse_ \elem -> do
+    text <- selectingFrom elem
+    end <- selectionEnd elem
+    let it = splitAt end text
+    errorShow it
