@@ -21,6 +21,7 @@ to generate this file without the comments in this block.
   , "foldable-traversable"
   , "maybe"
   , "prelude"
+  , "strings"
   , "web-cssom"
   , "web-dom"
   , "web-events"

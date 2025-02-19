@@ -1,13 +1,17 @@
 module Web.Nice.Selectable
   ( Selectable
+  , toSelectable
   , selectionStart
   , selectionEnd
   ) where
 
+import Prelude
+
 -- why can't Spago find the existing textcursor package 😭😭😭😭😭
 
-import Data.Maybe (Maybe)
-import Control.Bind (when)
+import Data.Maybe (Maybe(..))
+import Control.Alternative (guard)
+import Effect (Effect)
 
 import Web.HTML.HTMLTextAreaElement as TextArea
 import Web.HTML.HTMLInputElement as Input
@@ -21,14 +25,14 @@ toSelectable elem
   | Just ta <- TextArea.fromHTMLElement elem = pure $ pure $ TA ta
   | Just i <- Input.fromHTMLElement elem = do
     t <- Input.type_ i
-    pure $ when (
+    pure $ guard (
       t == "text" ||
       t == "search" ||
       t == "URL" ||
       t == "tel" ||
       t == "password" -- not that I think anyone will ever want to use this outside text LMAO
-    ) $ pure $ I i
-  | otherwise = Nothing
+    ) $> I i
+  | otherwise = pure Nothing
 
 selectionStart :: Selectable -> Effect Int
 selectionStart (TA e) = TextArea.selectionStart e
