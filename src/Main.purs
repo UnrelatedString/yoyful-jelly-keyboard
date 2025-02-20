@@ -5,8 +5,9 @@ module Main
 import Prelude
 
 import Data.Either (either) -- is this really not in Prelude???
-import Data.Maybe (Maybe, maybe, isJust)
-import Data.String (splitAt)
+import Data.Maybe (Maybe(..), maybe, isJust)
+import Data.String (splitAt, stripSuffix)
+import Data.String.Pattern (Pattern(..))
 import Control.Alternative (guard)
 import Control.Bind (when)
 import Data.Traversable (traverse, traverse_)
@@ -93,6 +94,9 @@ handleKeyPress :: HTMLDocument -> Event -> Effect Unit
 handleKeyPress doc event = when (isTabPress event) $
   activeElement doc >>= traverse toSelectable >>= join >>> traverse_ \elem -> do
     text <- selectingFrom elem
-    end <- selectionEnd elem
-    let it = splitAt end text
-    errorShow it
+    afterCursor <- selectionEnd elem
+    let {before: toConsider, after: suffix} = splitAt afterCursor text
+    -- TODO: move actual substitutions to a new module! So I can actually write something pure for once ;_;
+    case stripSuffix (Pattern "!test") toConsider of
+      Just prefix -> flip setSelectingFrom elem $ prefix <> "メントスコーラ！" <> suffix
+      Nothing -> pure unit

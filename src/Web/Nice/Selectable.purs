@@ -3,6 +3,8 @@ module Web.Nice.Selectable
   , toSelectable
   , selectionStart
   , selectionEnd
+  , setSelectionStart
+  , setSelectionEnd
   , selectingFrom
   , setSelectingFrom
   ) where
@@ -44,6 +46,14 @@ selectionStart (I e) = Input.selectionStart e
 selectionEnd :: Selectable -> Effect Int
 selectionEnd (TA e) = TextArea.selectionEnd e
 selectionEnd (I e) = Input.selectionEnd e
+
+setSelectionStart :: Int -> Selectable -> Effect Unit
+setSelectionStart to (TA e) = TextArea.setSelectionStart to e
+setSelectionStart to (I e) = Input.setSelectionStart to e
+
+setSelectionEnd :: Int -> Selectable -> Effect Unit
+setSelectionEnd to (TA e) = TextArea.setSelectionEnd to e
+setSelectionEnd to (I e) = Input.setSelectionEnd to e
 
 selectingFrom :: Selectable -> Effect String
 selectingFrom (TA e) = textContent e
