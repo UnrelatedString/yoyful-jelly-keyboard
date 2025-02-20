@@ -33,7 +33,7 @@ data BuiltinForm = Singlet Jel
 -- | ṭ 	§ 	Ä 	ẉ 	ỵ 	ẓ 	ȧ 	ḃ 	ċ 	ḋ 	ė 	ḟ 	ġ 	ḣ 	ŀ 	ṁ
 -- | ṅ 	ȯ 	ṗ 	ṙ 	ṡ 	ṫ 	ẇ 	ẋ 	ẏ 	ż 	« 	» 	‘ 	’ 	“ 	”
 
-data Jel = Lcxe
+data Jel = Lcxe -- yes this name is stupid BUT this character is important because it's zero so >:3
          | Cent
          | Pound
          | Currency
@@ -47,7 +47,7 @@ data Jel = Lcxe
          | Euq
          | Euro
          | BigAsc
-         | BigZeHautsia
+         | BigCCedilla
          | BigEth
          | BigEnye
          | Times
@@ -56,10 +56,10 @@ data Jel = Lcxe
          | BigThorn
          | Eszett
          | LittleAsc
-         | LittleZeHautsia
+         | LittleCCedilla
          | LittleEth
-         | LittleTurkishI
-         | LittleKarelianJ
+         | LittleIDotless
+         | LittleJDotless
          | LittleEnye
          | Obelus
          | LittleOSlash
@@ -112,7 +112,7 @@ data Jel = Lcxe
          | BigL -- what I'm taking right now deciding to type this by hand for some fucking reason
          | BigM
          | BigN
-         | BigO -- if only
+         | BigO
          | BigP
          | BigQ
          | BigR
@@ -289,8 +289,6 @@ data Jel = Lcxe
          | OpenDoubleQuote
          | CloseDoubleQuote
 
-
-
 data WeirdWackyAlias = Pilcrow
                      | LittleUUnderdot -- so THAT'S why the lb bookmarklet is broken like that LMAO
                      | LittleVUnderdot
@@ -300,13 +298,13 @@ normalize Pilcrow = Newline
 normalize LittleUUnderdot = Section
 normalize LittleVUnderdot = BigAUmlaut
 
-prefix :: BuiltinForm -> Maybe Jel
-prefix Singlet = Nothing
-prefix ChunkyNilad _ = Just BigOSlash
-prefix ChunkyOMonad _ = Just BigOE
-prefix ChunkyAMonad _ = Just BigAsc
-prefix ChunkyODyad _ = Just LittleOE
-prefix ChunkyADyad _ = Just LittleAsc
+builtinPrefix :: BuiltinForm -> Maybe Jel
+builtinPrefix Singlet = Nothing
+builtinPrefix ChunkyNilad _ = Just BigOSlash
+builtinPrefix ChunkyOMonad _ = Just BigOE
+builtinPrefix ChunkyAMonad _ = Just BigAsc
+builtinPrefix ChunkyODyad _ = Just LittleOE
+builtinPrefix ChunkyADyad _ = Just LittleAsc
 
 -- figure out what to actually do with this to get a nice Enum instance. Tomorrow. wow it's late
 derive instance Generic Jel
