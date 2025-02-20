@@ -6,8 +6,7 @@ import Prelude
 
 import Data.Either (either) -- is this really not in Prelude???
 import Data.Maybe (Maybe(..), maybe, isJust)
-import Data.String (splitAt, stripSuffix)
-import Data.String.Pattern (Pattern(..))
+import Data.String (splitAt)
 import Control.Alternative (guard)
 import Control.Bind (when)
 import Data.Traversable (traverse, traverse_)
@@ -22,7 +21,7 @@ import Web.HTML.HTMLElement as HTMLElement
 import Web.DOM.Element (Element)
 import Web.CSSOM.ElementCSSInlineStyle (style, fromHTMLElement)
 import Web.CSSOM.CSSStyleDeclaration (CSSStyleDeclaration, setProperty)
-import Web.Event.Event (Event, target, type_)
+import Web.Event.Event (Event, target, type_, preventDefault)
 import Web.UIEvent.KeyboardEvent (fromEvent, code)
 import Web.UIEvent.KeyboardEvent.EventTypes (keydown)
 import Web.Event.EventTarget (EventListener, eventListener, addEventListenerWithOptions)
@@ -30,6 +29,8 @@ import Web.Event.EventTarget (EventListener, eventListener, addEventListenerWith
 import Web.Nice.Node (appendChild)
 import Web.Nice.Builder (Builder, runBuilder, createElement, createText)
 import Web.Nice.Selectable
+
+import Jelly.Sub (trySubstitute)
 
 main :: Effect Unit
 main = try window >>= either noWindow windowedMain
@@ -96,7 +97,7 @@ handleKeyPress doc event = when (isTabPress event) $
     text <- selectingFrom elem
     afterCursor <- selectionEnd elem
     let {before: toConsider, after: suffix} = splitAt afterCursor text
-    -- TODO: move actual substitutions to a new module! So I can actually write something pure for once ;_;
-    case stripSuffix (Pattern "!test") toConsider of
-      Just prefix -> flip setSelectingFrom elem $ prefix <> "メントスコーラ！" <> suffix
-      Nothing -> pure unit
+    traverse_ (\substitution -> do
+      setSelectingFrom (substitution <> suffix) elem
+      preventDefault event
+    ) $ trySubstitute toConsider
