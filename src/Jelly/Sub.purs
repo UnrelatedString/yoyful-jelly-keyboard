@@ -11,7 +11,7 @@ import Control.Alternative (class Alt, class Plus, class Alternative, (<|>), emp
 import Data.Newtype (class Newtype, wrap, unwrap, modify)
 import Control.Monad.Writer (Writer, execWriter, tell)
 
-import Jelly.Codepage (Jel(..))
+import Jelly.Codepage (Jel(..), BuiltinForm(..))
 
 type SingleSub = {prefix :: String, sub :: String, deltaLength :: Int}
 
@@ -66,14 +66,18 @@ makeCaseInsensitiveSubstitution pat to = wrap \text -> do
   }
 
 -- we love abusable notation
-makeTellSubstitution :: String -> String -> Writer (String ->? SingleSub) Unit
-makeTellSubstitution = (tell <<< _) <<< makeSubstitution
+makeTellSubstitution :: forall a. Show a => String -> a -> Writer (String ->? SingleSub) Unit
+makeTellSubstitution = (tell <<< _) <<< (_ <<< show) <<< makeSubstitution
 
-makeTellCaseInsensitiveSubstitution :: String -> String -> Writer (String ->? SingleSub) Unit
-makeTellCaseInsensitiveSubstitution = (tell <<< _) <<< makeCaseInsensitiveSubstitution
+makeTellCaseInsensitiveSubstitution :: forall a. Show a => String -> a -> Writer (String ->? SingleSub) Unit
+makeTellCaseInsensitiveSubstitution = (tell <<< _) <<< (_ <<< show) <<< makeCaseInsensitiveSubstitution
+
+makeTellStringSubstitution :: String -> String -> Writer (String ->? SingleSub) Unit
+makeTellStringSubstitution = (tell <<< _) <<<  makeSubstitution
 
 infix 5 makeTellSubstitution as ~>
 infix 5 makeTellCaseInsensitiveSubstitution as ~~>
+infix 5 makeTellStringSubstitution as :~>
 
 -- THE entry point to the impure frontend
 trySubstitute :: String -> Maybe String
@@ -84,4 +88,6 @@ tryBatchSubstitute = empty -- TODO
 
 trySingleSubstitutions :: String ->? String
 trySingleSubstitutions = smoosh <$> execWriter do
-  "!mentoscola" ~~> "うそだろおい…"
+  "!mentoscola" :~> "うそだろおい…"
+  ".repr" ~~> ChunkyOMonad BigROverdot
+  ".U" ~> BigUUnderdot

@@ -15,6 +15,8 @@ import Data.Enum
   , toEnum
   , fromEnum)
 import Data.Maybe (Maybe(..))
+import Data.String.CodeUnits (singleton)
+import Data.Foldable (foldMap)
 
 data BuiltinForm = Singlet Jel
                  | ChunkyNilad Jel
@@ -1088,6 +1090,10 @@ instance BoundedEnum Jel where
   toEnum 255 = Just CloseDoubleQuote
   toEnum _ = Nothing
 
+-- feels KINDA like an abuse of Show but like also. eh
+instance Show Jel where 
+  show = singleton <<< unicode
+
 data WeirdWackyAlias = Pilcrow
                      | LittleUUnderdot -- so THAT'S why the lb bookmarklet is broken like that LMAO
                      | LittleVUnderdot
@@ -1113,3 +1119,5 @@ builtinMainChar (ChunkyAMonad c) = c
 builtinMainChar (ChunkyODyad c) = c
 builtinMainChar (ChunkyADyad c) = c
 
+instance Show BuiltinForm where
+  show b = foldMap show (builtinPrefix b) <> show (builtinMainChar b)
