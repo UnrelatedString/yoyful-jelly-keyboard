@@ -36,5 +36,8 @@ instance IsNode Node where
 else instance IsNode DOM.Text.Text where
   toNode = DOM.Text.toNode
 
+else instance IsNode DOM.Element.Element where
+  toNode = DOM.Element.toNode
+
 else instance IsElem a => IsNode a where
   toNode = toNode <<< toElem
