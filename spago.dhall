@@ -17,6 +17,7 @@ to generate this file without the comments in this block.
   , "css"
   , "effect"
   , "either"
+  , "enums"
   , "exceptions"
   , "foldable-traversable"
   , "maybe"
