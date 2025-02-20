@@ -5,10 +5,9 @@ module Main
 import Prelude
 
 import Data.Either (either) -- is this really not in Prelude???
-import Data.Maybe (Maybe(..), maybe, isJust)
+import Data.Maybe (Maybe, maybe, isJust)
 import Data.String (splitAt)
 import Control.Alternative (guard)
-import Control.Bind (when)
 import Data.Traversable (traverse, traverse_)
 import Effect (Effect)
 import Effect.Class (liftEffect)
@@ -21,14 +20,14 @@ import Web.HTML.HTMLElement as HTMLElement
 import Web.DOM.Element (Element)
 import Web.CSSOM.ElementCSSInlineStyle (style, fromHTMLElement)
 import Web.CSSOM.CSSStyleDeclaration (CSSStyleDeclaration, setProperty)
-import Web.Event.Event (Event, target, type_, preventDefault)
+import Web.Event.Event (Event, type_, preventDefault)
 import Web.UIEvent.KeyboardEvent (fromEvent, code)
 import Web.UIEvent.KeyboardEvent.EventTypes (keydown)
 import Web.Event.EventTarget (EventListener, eventListener, addEventListenerWithOptions)
 
 import Web.Nice.Node (appendChild)
 import Web.Nice.Builder (Builder, runBuilder, createElement, createText)
-import Web.Nice.Selectable
+import Web.Nice.Selectable (selectingFrom, selectionEnd, setSelectingFrom, toSelectable)
 
 import Jelly.Sub (trySubstitute)
 

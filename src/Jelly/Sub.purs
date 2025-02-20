@@ -7,12 +7,14 @@ import Prelude
 import Data.String (stripSuffix, length)
 import Data.String.Pattern (Pattern(..))
 import Data.Maybe (Maybe(..), maybe')
-import Data.Functor (class Functor)
 import Control.Alternative (class Alt, class Plus, class Alternative, (<|>), empty)
 import Data.Newtype (class Newtype, wrap, unwrap)
 import Control.Monad.Writer (Writer, execWriter, tell)
 
 type SingleSub = {prefix :: String, sub :: String, deltaLength :: Int}
+
+smoosh :: SingleSub -> String
+smoosh s = s.prefix <> s.sub
 
 newtype Substitution a b = Substitution (a -> Maybe b)
 derive instance Newtype (Substitution a b) _
@@ -66,5 +68,5 @@ tryBatchSubstitute :: String ->? String
 tryBatchSubstitute = empty -- TODO
 
 trySingleSubstitutions :: String ->? String
-trySingleSubstitutions = (\s -> s.prefix <> s.sub) <$> execWriter do
+trySingleSubstitutions = smoosh <$> execWriter do
   "!mentoscola" ~> "うそだろおい…"
