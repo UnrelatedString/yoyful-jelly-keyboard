@@ -60,7 +60,7 @@ makeSubstitution pat to = wrap \text -> do
 makeTellSubstitution :: String -> String -> Writer (String ->? SingleSub) Unit
 makeTellSubstitution = (tell <<< _) <<< makeSubstitution
 
-infix 5 makeTellSubstitution as ~>
+infix 5 makeTellSubstitution as :>
 
 -- THE entry point to the impure frontend
 trySubstitute :: String -> Maybe String
@@ -71,4 +71,4 @@ tryBatchSubstitute = empty -- TODO
 
 trySingleSubstitutions :: String ->? String
 trySingleSubstitutions = smoosh <$> execWriter do
-  "!mentoscola" ~> "うそだろおい…"
+  "!mentoscola" :> "うそだろおい…"
