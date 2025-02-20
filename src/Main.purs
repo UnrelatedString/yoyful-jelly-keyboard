@@ -45,8 +45,7 @@ windowedMain win = do
   maybeBody <- document win >>= body
   into <- HTMLElement.toNode <$> expect "There's no body 😭😭😭" maybeBody
   keyboard <- runBuilder doc buildKeyboard
-  -- appendChild into keyboard -- actually just. not doing this. because this will be usable enough to release LOOOOONG before I figure out how to make a clickable keyboard
-  -- TODO: actually store the handler to be able to close it when the keyboard is closed
+  appendChild into keyboard
   void $ registerKeyHandler win
   celebrateSuccess
 
