@@ -33,14 +33,8 @@ setTextContent to = DOM.Node.setTextContent to <<< toNode
 instance IsNode Node where
   toNode = identity
 
-instance IsNode DOM.Element.Element where
-  toNode = DOM.Element.toNode
-
-instance IsNode DOM.Text.Text where
+else instance IsNode DOM.Text.Text where
   toNode = DOM.Text.toNode
 
-instance IsNode HTMLElement.HTMLElement where
-  toNode = HTMLElement.toNode
-
-instance IsElem a => IsNode a where
+else instance IsElem a => IsNode a where
   toNode = toNode <<< toElem

@@ -28,7 +28,7 @@ import Web.Event.EventTarget (EventListener, eventListener, addEventListenerWith
 
 import Web.Nice.Node (appendChild)
 import Web.Nice.Builder (Builder, runBuilder, createElement, createText)
-import Web.Nice.Selectable (Selectable, toSelectable, selectionStart, selectionEnd)
+import Web.Nice.Selectable
 
 main :: Effect Unit
 main = try window >>= either noWindow windowedMain
@@ -91,7 +91,7 @@ isTabPress event = isJust do
 
 handleKeyPress :: HTMLDocument -> Event -> Effect Unit
 handleKeyPress doc event = when (isTabPress event) $
-  activeElement doc >>= traverse toSelectable >>= traverse_ \elem -> do
+  activeElement doc >>= traverse toSelectable >>= join >>> traverse_ \elem -> do
     text <- selectingFrom elem
     end <- selectionEnd elem
     let it = splitAt end text
