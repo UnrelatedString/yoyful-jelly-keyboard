@@ -11,6 +11,8 @@ import Control.Alternative (class Alt, class Plus, class Alternative, (<|>), emp
 import Data.Newtype (class Newtype, wrap, unwrap, modify)
 import Control.Monad.Writer (Writer, execWriter, tell)
 
+import Jelly.Codepage (Jel(..))
+
 type SingleSub = {prefix :: String, sub :: String, deltaLength :: Int}
 
 smoosh :: SingleSub -> String
