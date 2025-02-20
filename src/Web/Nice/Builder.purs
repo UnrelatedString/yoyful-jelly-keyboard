@@ -1,6 +1,5 @@
 module Web.Nice.Builder
   ( Builder
-  , ContextT
   , runBuilder
   , createElement
   , createText
@@ -13,36 +12,15 @@ import Effect.Class (class MonadEffect)
 import Web.DOM.Document as DOM.Document
 import Web.DOM.Element (Element)
 import Web.DOM.Text (Text)
+import Control.Monad.Reader (ReaderT(..), runReaderT)
 
-data ContextT :: forall k. Type -> (k -> Type) -> k -> Type
-data ContextT c m a = ContextT (c -> m a)
-type Builder = ContextT DOM.Document.Document Effect
-
-instance Functor m => Functor (ContextT c m) where
-  map f (ContextT a) = ContextT $ map f <<< a
-
-instance Apply m => Apply (ContextT c m) where
-  apply (ContextT f) (ContextT a) = ContextT \ctx -> f ctx <*> a ctx
-
-instance Applicative m => Applicative (ContextT c m) where
-  pure = ContextT <<< const <<< pure
-
-instance Monad m => Bind (ContextT c m) where
-  bind (ContextT a) f = ContextT \ctx -> do
-    r1 <- a ctx
-    let ContextT r2 = f r1
-    r2 ctx
-
-instance Monad m => Monad (ContextT c m)
-
-instance MonadEffect (ContextT c Effect) where
-  liftEffect = ContextT <<< const
+type Builder = ReaderT DOM.Document.Document Effect
 
 createElement :: String -> Builder Element
-createElement = ContextT <<< DOM.Document.createElement
+createElement = ReaderT <<< DOM.Document.createElement
 
 createText :: String -> Builder Text
-createText = ContextT <<< DOM.Document.createTextNode
+createText = ReaderT <<< DOM.Document.createTextNode
 
 runBuilder :: forall a. DOM.Document.Document -> Builder a -> Effect a
-runBuilder doc (ContextT a) = a doc
+runBuilder = flip runReaderT
