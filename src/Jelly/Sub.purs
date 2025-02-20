@@ -89,5 +89,5 @@ tryBatchSubstitute = empty -- TODO
 trySingleSubstitutions :: String ->? String
 trySingleSubstitutions = smoosh <$> execWriter do
   "!mentoscola" :~> "うそだろおい…"
-  ".repr" ~~> ChunkyOMonad BigROverdot
-  ".U" ~> BigUUnderdot
+  ".repr" ~~> ChunkyOMonad BigROverdot -- TODO: put verbose aliases in their own block for organization
+  ".U" ~> BigUUnderdot -- TODO: put conventional double char aliases in their own block, and then make a separate block for innovated aliases
