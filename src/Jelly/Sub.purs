@@ -4,7 +4,7 @@ module Jelly.Sub
 
 import Prelude
 
-import Data.String (stripSuffix, length)
+import Data.String (stripSuffix, length, toLower, take)
 import Data.String.Pattern (Pattern(..))
 import Data.Maybe (Maybe(..), maybe')
 import Control.Alternative (class Alt, class Plus, class Alternative, (<|>), empty)
@@ -56,11 +56,24 @@ makeSubstitution pat to = wrap \text -> do
     deltaLength: length to - length pat -- uhhhhh wait am I even going to use this
   }
 
+makeCaseInsensitiveSubstitution :: String -> String -> String ->? SingleSub
+makeCaseInsensitiveSubstitution pat to = wrap \text -> do
+  foldedPrefix <- stripSuffix (Pattern pat) $ toLower text
+  pure {
+    prefix: take (length foldedPrefix) text,
+    sub: to,
+    deltaLength: length to - length pat
+  }
+
 -- we love abusable notation
 makeTellSubstitution :: String -> String -> Writer (String ->? SingleSub) Unit
 makeTellSubstitution = (tell <<< _) <<< makeSubstitution
 
-infix 5 makeTellSubstitution as :>
+makeTellCaseInsensitiveSubstitution :: String -> String -> Writer (String ->? SingleSub) Unit
+makeTellCaseInsensitiveSubstitution = (tell <<< _) <<< makeCaseInsensitiveSubstitution
+
+infix 5 makeTellSubstitution as ~>
+infix 5 makeTellCaseInsensitiveSubstitution as ~~>
 
 -- THE entry point to the impure frontend
 trySubstitute :: String -> Maybe String
@@ -71,4 +84,4 @@ tryBatchSubstitute = empty -- TODO
 
 trySingleSubstitutions :: String ->? String
 trySingleSubstitutions = smoosh <$> execWriter do
-  "!mentoscola" :> "うそだろおい…"
+  "!mentoscola" ~~> "うそだろおい…"
