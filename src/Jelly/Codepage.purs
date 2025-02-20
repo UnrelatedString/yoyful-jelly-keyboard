@@ -299,12 +299,12 @@ normalize LittleUUnderdot = Section
 normalize LittleVUnderdot = BigAUmlaut
 
 builtinPrefix :: BuiltinForm -> Maybe Jel
-builtinPrefix Singlet = Nothing
-builtinPrefix ChunkyNilad _ = Just BigOSlash
-builtinPrefix ChunkyOMonad _ = Just BigOE
-builtinPrefix ChunkyAMonad _ = Just BigAsc
-builtinPrefix ChunkyODyad _ = Just LittleOE
-builtinPrefix ChunkyADyad _ = Just LittleAsc
+builtinPrefix (Singlet _) = Nothing
+builtinPrefix (ChunkyNilad _) = Just BigOSlash
+builtinPrefix (ChunkyOMonad _) = Just BigOE
+builtinPrefix (ChunkyAMonad _) = Just BigAsc
+builtinPrefix (ChunkyODyad _) = Just LittleOE
+builtinPrefix (ChunkyADyad _) = Just LittleAsc
 
 -- figure out what to actually do with this to get a nice Enum instance. Tomorrow. wow it's late
-derive instance Generic Jel
+-- derive instance Generic Jel _ -- commented out for now because WHAT ARE THESE COMPILE TIMES ????
