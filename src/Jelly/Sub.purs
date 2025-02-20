@@ -18,11 +18,7 @@ type SingleSub = {prefix :: String, sub :: String, deltaLength :: Int}
 smoosh :: SingleSub -> String
 smoosh s = s.prefix <> s.sub
 
-newtype Alias b a = Alias {metadata :: a, try :: b}
-derive instance Newtype (Alias b a) _
-derive instance Functor (Alias b)
-derive newtype instance Semigroup a => Semigroup b => Semigroup (Alias b a)
-derive newtype instance Monoid a => Monoid b => Monoid (Alias b a)
+type Alias b a = {metadata :: a, try :: b}
 
 newtype TryAlias a b = TryAlias (a -> Maybe b)
 derive instance Newtype (TryAlias a b) _
