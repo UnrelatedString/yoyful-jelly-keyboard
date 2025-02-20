@@ -6,12 +6,11 @@ import Prelude
 
 import Data.String (stripSuffix, length)
 import Data.String.Pattern (Pattern(..))
-import Data.Maybe (Maybe(..), fromMaybe')
+import Data.Maybe (Maybe(..), maybe')
 import Data.Functor (class Functor)
 import Control.Alternative (class Alt, class Plus, class Alternative, (<|>), empty)
 import Data.Newtype (class Newtype, wrap, unwrap)
 import Control.Monad.Writer (Writer, execWriter, tell)
-import Control.Comonad ((=>>))
 
 type SingleSub = {prefix :: String, sub :: String, deltaLength :: Int}
 
@@ -30,8 +29,8 @@ instance Applicative (Substitution a) where
   pure = wrap <<< const <<< pure
 
 instance Alt (Substitution a) where
-  alt a b = wrap \x -> -- Not using Alt Maybe because no laziness means no short circuting!!
-    unwrap a x =>> identity >>= fromMaybe' (\_ -> unwrap b x)
+  alt a b = wrap \x -> -- Not using Alt Maybe because no laziness means no short circuiting!!
+    maybe' (\_ -> unwrap b x) pure $ unwrap a x
 
 instance Plus (Substitution a) where
   empty = wrap $ const Nothing
@@ -46,11 +45,11 @@ instance Monoid (Substitution a b) where
 
 makeSubstitution :: String -> String -> String ->? SingleSub
 makeSubstitution pat to = wrap \text -> do
-  prefix <- stripSuffix text $ Pattern pat
+  prefix <- stripSuffix (Pattern pat) text
   pure {
     prefix,
     sub: to,
-    deltaLength: length to - length pat
+    deltaLength: length to - length pat -- uhhhhh wait am I even going to use this
   }
 
 -- we love abusable notation
@@ -67,5 +66,5 @@ tryBatchSubstitute :: String ->? String
 tryBatchSubstitute = empty -- TODO
 
 trySingleSubstitutions :: String ->? String
-trySingleSubstitutions = execWriter do
+trySingleSubstitutions = (\s -> s.prefix <> s.sub) <$> execWriter do
   "!mentoscola" ~> "うそだろおい…"
