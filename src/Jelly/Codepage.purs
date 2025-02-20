@@ -3,6 +3,7 @@ module Jelly.Codepage
  , BuiltinForm(..)
  , unicode
  , foldVariants
+ , jelString
  ) where
 
 import Prelude
@@ -1091,6 +1092,9 @@ instance BoundedEnum Jel where
   toEnum 254 = Just OpenDoubleQuote
   toEnum 255 = Just CloseDoubleQuote
   toEnum _ = Nothing
+
+jelString :: Jel -> String
+jelString = singleton <<< unicode
 
 -- feels KINDA like an abuse of Show but like also. eh
 instance Show Jel where 
