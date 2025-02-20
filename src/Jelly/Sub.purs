@@ -18,37 +18,44 @@ type SingleSub = {prefix :: String, sub :: String, deltaLength :: Int}
 smoosh :: SingleSub -> String
 smoosh s = s.prefix <> s.sub
 
-newtype Substitution a b = Substitution (a -> Maybe b)
-derive instance Newtype (Substitution a b) _
+newtype Alias b a = Alias {metadata :: a, try :: b}
+derive instance Newtype (Alias b a) _
+derive instance Functor (Alias b)
+derive newtype instance Semigroup a => Semigroup b => Semigroup (Alias b a)
+derive newtype instance Monoid a => Monoid b => Monoid (Alias b a)
 
-infixr 0 type Substitution as ->?
+newtype TryAlias a b = TryAlias (a -> Maybe b)
+derive instance Newtype (TryAlias a b) _
 
-instance Functor (Substitution a) where
+infixr 0 type Alias as :::
+infixr 1 type TryAlias as ->?
+
+instance Functor (TryAlias a) where
   map f = (wrap <<< _) $ (_ <<< unwrap) $ map $ map f -- modify. still doesn't typecheck. modify is LITERALLY modify fn t = wrap (fn (unwrap t)) HOW IS THAT NOT. WHAT. modify and (wrap <<< _) <<< (_ <<< unwrap) literally have reconcilable types in spago repl and ????? there's no way the added flexibility matters here when it.s it's THE SAME NEWTYPE AAAAAAAAGFLAEMGL:ERMGLG:AFRG
 
-instance Apply (Substitution a) where
+instance Apply (TryAlias a) where
   apply f a = wrap \x -> unwrap f x <*> unwrap a x 
 
-instance Applicative (Substitution a) where
+instance Applicative (TryAlias a) where
   pure = wrap <<< const <<< pure
 
-instance Alt (Substitution a) where
+instance Alt (TryAlias a) where
   alt a b = wrap \x -> -- Not using Alt Maybe because no laziness means no short circuiting!!
     maybe' (\_ -> unwrap b x) pure $ unwrap a x
 
-instance Plus (Substitution a) where
+instance Plus (TryAlias a) where
   empty = wrap $ const Nothing
 
-instance Alternative (Substitution a)
+instance Alternative (TryAlias a)
 
-instance Semigroup (Substitution a b) where
+instance Semigroup (TryAlias a b) where
   append = (<|>)
 
-instance Monoid (Substitution a b) where
+instance Monoid (TryAlias a b) where
   mempty = empty
 
-makeSubstitution :: String -> String -> String ->? SingleSub
-makeSubstitution pat to = wrap \text -> do
+makeAlias :: String -> String -> String ->? SingleSub
+makeAlias pat to = wrap \text -> do
   prefix <- stripSuffix (Pattern pat) text
   pure {
     prefix,
@@ -56,8 +63,8 @@ makeSubstitution pat to = wrap \text -> do
     deltaLength: length to - length pat -- uhhhhh wait am I even going to use this
   }
 
-makeCaseInsensitiveSubstitution :: String -> String -> String ->? SingleSub
-makeCaseInsensitiveSubstitution pat to = wrap \text -> do
+makeCaseInsensitiveAlias :: String -> String -> String ->? SingleSub
+makeCaseInsensitiveAlias pat to = wrap \text -> do
   foldedPrefix <- stripSuffix (Pattern pat) $ toLower text
   pure {
     prefix: take (length foldedPrefix) text,
@@ -66,28 +73,28 @@ makeCaseInsensitiveSubstitution pat to = wrap \text -> do
   }
 
 -- we love abusable notation
-makeTellSubstitution :: forall a. Show a => String -> a -> Writer (String ->? SingleSub) Unit
-makeTellSubstitution = (tell <<< _) <<< (_ <<< show) <<< makeSubstitution
+makeTellAlias :: forall a. Show a => String -> a -> Writer (String ->? SingleSub) Unit
+makeTellAlias = (tell <<< _) <<< (_ <<< show) <<< makeAlias
 
-makeTellCaseInsensitiveSubstitution :: forall a. Show a => String -> a -> Writer (String ->? SingleSub) Unit
-makeTellCaseInsensitiveSubstitution = (tell <<< _) <<< (_ <<< show) <<< makeCaseInsensitiveSubstitution
+makeTellCaseInsensitiveAlias :: forall a. Show a => String -> a -> Writer (String ->? SingleSub) Unit
+makeTellCaseInsensitiveAlias = (tell <<< _) <<< (_ <<< show) <<< makeCaseInsensitiveAlias
 
-makeTellStringSubstitution :: String -> String -> Writer (String ->? SingleSub) Unit
-makeTellStringSubstitution = (tell <<< _) <<<  makeSubstitution
+makeTellStringAlias :: String -> String -> Writer (String ->? SingleSub) Unit
+makeTellStringAlias = (tell <<< _) <<<  makeAlias
 
-infix 5 makeTellSubstitution as ~>
-infix 5 makeTellCaseInsensitiveSubstitution as ~~>
-infix 5 makeTellStringSubstitution as :~>
+infix 5 makeTellAlias as ~>
+infix 5 makeTellCaseInsensitiveAlias as ~~>
+infix 5 makeTellStringAlias as :~>
 
 -- THE entry point to the impure frontend
 trySubstitute :: String -> Maybe String
-trySubstitute = unwrap $ tryBatchSubstitute <|> trySingleSubstitutions
+trySubstitute = unwrap $ tryBatchSubstitute <|> trySingleAliases
 
 tryBatchSubstitute :: String ->? String
 tryBatchSubstitute = empty -- TODO
 
-trySingleSubstitutions :: String ->? String
-trySingleSubstitutions = smoosh <$> execWriter do
+trySingleAliases :: String ->? String
+trySingleAliases = smoosh <$> execWriter do
   "!mentoscola" :~> "うそだろおい…"
   ".repr" ~~> ChunkyOMonad BigROverdot -- TODO: put verbose aliases in their own block for organization
   ".U" ~> BigUUnderdot -- TODO: put conventional double char aliases in their own block, and then make a separate block for innovated aliases

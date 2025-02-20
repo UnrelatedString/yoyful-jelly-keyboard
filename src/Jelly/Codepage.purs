@@ -2,6 +2,7 @@ module Jelly.Codepage
  ( Jel(..)
  , BuiltinForm(..)
  , unicode
+ , foldVariants
  ) where
 
 import Prelude
@@ -20,10 +21,11 @@ import Data.Foldable (foldMap)
 
 data BuiltinForm = Singlet Jel
                  | ChunkyNilad Jel
-                 | ChunkyOMonad Jel
                  | ChunkyAMonad Jel
-                 | ChunkyODyad Jel
                  | ChunkyADyad Jel
+                 | ChunkyOMonad Jel
+                 | ChunkyODyad Jel
+
 
 
 -- | ¡ 	¢ 	£ 	¤ 	¥ 	¦ 	© 	¬ 	® 	µ 	½ 	¿ 	€ 	Æ 	Ç 	Ð
@@ -1106,18 +1108,27 @@ normalize LittleVUnderdot = BigAUmlaut
 builtinPrefix :: BuiltinForm -> Maybe Jel
 builtinPrefix (Singlet _) = Nothing
 builtinPrefix (ChunkyNilad _) = Just BigOSlash
-builtinPrefix (ChunkyOMonad _) = Just BigOE
 builtinPrefix (ChunkyAMonad _) = Just BigAsc
-builtinPrefix (ChunkyODyad _) = Just LittleOE
 builtinPrefix (ChunkyADyad _) = Just LittleAsc
+builtinPrefix (ChunkyOMonad _) = Just BigOE
+builtinPrefix (ChunkyODyad _) = Just LittleOE
 
 builtinMainChar :: BuiltinForm -> Jel
 builtinMainChar (Singlet c) = c 
 builtinMainChar (ChunkyNilad c) = c
-builtinMainChar (ChunkyOMonad c) = c
 builtinMainChar (ChunkyAMonad c) = c
-builtinMainChar (ChunkyODyad c) = c
 builtinMainChar (ChunkyADyad c) = c
+builtinMainChar (ChunkyOMonad c) = c
+builtinMainChar (ChunkyODyad c) = c
+
+-- for collation in tooltips. am I even using "collation" right
+foldVariants :: forall a. Semigroup a => (BuiltinForm -> a) -> Jel -> a
+foldVariants f c = f (Singlet c) <>
+                   f (ChunkyNilad c) <>
+                   f (ChunkyAMonad c) <>
+                   f (ChunkyADyad c) <>
+                   f (ChunkyOMonad c) <>
+                   f (ChunkyODyad c)
 
 instance Show BuiltinForm where
   show b = foldMap show (builtinPrefix b) <> show (builtinMainChar b)
