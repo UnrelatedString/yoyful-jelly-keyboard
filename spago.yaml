@@ -1,0 +1,28 @@
+package:
+  dependencies:
+    - console
+    - control
+    - css
+    - effect
+    - either
+    - enums
+    - exceptions
+    - exists
+    - foldable-traversable
+    - maybe
+    - newtype
+    - prelude
+    - strings
+    - transformers
+    - tuples
+    - unfoldable
+    - web-cssom
+    - web-dom
+    - web-events
+    - web-html
+    - web-uievents
+  name: my-project
+workspace:
+  extraPackages: {}
+  packageSet:
+    registry: 63.2.1
