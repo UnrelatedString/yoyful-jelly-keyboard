@@ -14,6 +14,7 @@ package:
     - prelude
     - strings
     - transformers
+    - trivial-unfold
     - tuples
     - unfoldable
     - web-cssom
@@ -25,4 +26,4 @@ package:
 workspace:
   extraPackages: {}
   packageSet:
-    registry: 63.2.1
+    registry: 63.3.0
