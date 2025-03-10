@@ -1,6 +1,6 @@
 module Jelly.Builtins
-  ( Builtin
+ ( Builtin(..)
 
-  ) where
+ ) where
 
-  data Builtin
+data Builtin = 

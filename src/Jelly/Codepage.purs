@@ -20,15 +20,6 @@ import Data.Maybe (Maybe(..))
 import Data.String.CodeUnits (singleton)
 import Data.Foldable (foldMap)
 
-data BuiltinForm = Singlet Jel
-                 | ChunkyNilad Jel
-                 | ChunkyAMonad Jel
-                 | ChunkyADyad Jel
-                 | ChunkyOMonad Jel
-                 | ChunkyODyad Jel
-
-
-
 -- | ¡ 	¢ 	£ 	¤ 	¥ 	¦ 	© 	¬ 	® 	µ 	½ 	¿ 	€ 	Æ 	Ç 	Ð
 -- | Ñ 	× 	Ø 	Œ 	Þ 	ß 	æ 	ç 	ð 	ı 	ȷ 	ñ 	÷ 	ø 	œ 	þ
 -- |   	! 	" 	# 	$ 	% 	& 	' 	( 	) 	* 	+ 	, 	- 	. 	/
@@ -1109,30 +1100,37 @@ normalize Pilcrow = Newline
 normalize LittleUUnderdot = Section
 normalize LittleVUnderdot = BigAUmlaut
 
+data BuiltinForm = Single Jel
+                 | O0 Jel
+                 | A1 Jel
+                 | A2 Jel
+                 | O1 Jel
+                 | O2 Jel
+
 builtinPrefix :: BuiltinForm -> Maybe Jel
-builtinPrefix (Singlet _) = Nothing
-builtinPrefix (ChunkyNilad _) = Just BigOSlash
-builtinPrefix (ChunkyAMonad _) = Just BigAsc
-builtinPrefix (ChunkyADyad _) = Just LittleAsc
-builtinPrefix (ChunkyOMonad _) = Just BigOE
-builtinPrefix (ChunkyODyad _) = Just LittleOE
+builtinPrefix (Single _) = Nothing
+builtinPrefix (O0 _) = Just BigOSlash
+builtinPrefix (A1 _) = Just BigAsc
+builtinPrefix (A2 _) = Just LittleAsc
+builtinPrefix (O1 _) = Just BigOE
+builtinPrefix (O2 _) = Just LittleOE
 
 builtinMainChar :: BuiltinForm -> Jel
-builtinMainChar (Singlet c) = c 
-builtinMainChar (ChunkyNilad c) = c
-builtinMainChar (ChunkyAMonad c) = c
-builtinMainChar (ChunkyADyad c) = c
-builtinMainChar (ChunkyOMonad c) = c
-builtinMainChar (ChunkyODyad c) = c
+builtinMainChar (Single c) = c 
+builtinMainChar (O0 c) = c
+builtinMainChar (A1 c) = c
+builtinMainChar (A2 c) = c
+builtinMainChar (O1 c) = c
+builtinMainChar (O2 c) = c
 
 -- for collation in tooltips. am I even using "collation" right
 foldVariants :: forall a. Semigroup a => (BuiltinForm -> a) -> Jel -> a
-foldVariants f c = f (Singlet c) <>
-                   f (ChunkyNilad c) <>
-                   f (ChunkyAMonad c) <>
-                   f (ChunkyADyad c) <>
-                   f (ChunkyOMonad c) <>
-                   f (ChunkyODyad c)
+foldVariants f c = f (Single c) <>
+                   f (O0 c) <>
+                   f (A1 c) <>
+                   f (A2 c) <>
+                   f (O1 c) <>
+                   f (O2 c)
 
 instance Show BuiltinForm where
   show b = foldMap show (builtinPrefix b) <> show (builtinMainChar b)
