@@ -22,8 +22,18 @@ package:
     - web-events
     - web-html
     - web-uievents
-  name: my-project
+  name: yoyful-jelly-keyboard
+  test:
+    main: Test.Main
+    dependencies:
+      - spec
+      - spec-quickcheck
+      - spec-node
+      - my-spec-reporter
 workspace:
-  extraPackages: {}
   packageSet:
-    registry: 63.3.0
+    registry: 63.4.0
+  extraPackages:
+    my-spec-reporter:
+      git: https://github.com/UnrelatedString/my-spec-reporter.git
+      ref: main
