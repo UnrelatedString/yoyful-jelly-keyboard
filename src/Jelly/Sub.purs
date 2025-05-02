@@ -27,7 +27,7 @@ infixr 0 type Alias as :::
 infixr 1 type TryAlias as ->?
 
 instance Functor (TryAlias a) where
-  map f = (wrap <<< _) $ (_ <<< unwrap) $ map $ map f -- modify. still doesn't typecheck. modify is LITERALLY modify fn t = wrap (fn (unwrap t)) HOW IS THAT NOT. WHAT. modify and (wrap <<< _) <<< (_ <<< unwrap) literally have reconcilable types in spago repl and ????? there's no way the added flexibility matters here when it.s it's THE SAME NEWTYPE AAAAAAAAGFLAEMGL:ERMGLG:AFRG
+  map = (wrap <<< _) <<< (_ <<< unwrap) <<< map <<< map
 
 instance Apply (TryAlias a) where
   apply f a = wrap \x -> unwrap f x <*> unwrap a x 
