@@ -1,10 +1,10 @@
 module Jelly.Codepage
- ( Jel(..)
- , BuiltinForm(..)
- , unicode
- , foldVariants
- , jelString
- ) where
+  ( Jel(..)
+  , BuiltinForm(..)
+  , unicode
+  , foldVariants
+  , jelString
+  ) where
 
 import Prelude
 
@@ -37,262 +37,263 @@ import Data.Foldable (foldMap)
 -- | ṭ 	§ 	Ä 	ẉ 	ỵ 	ẓ 	ȧ 	ḃ 	ċ 	ḋ 	ė 	ḟ 	ġ 	ḣ 	ŀ 	ṁ
 -- | ṅ 	ȯ 	ṗ 	ṙ 	ṡ 	ṫ 	ẇ 	ẋ 	ẏ 	ż 	« 	» 	‘ 	’ 	“ 	”
 
-data Jel = Lcxe -- yes this name is stupid BUT this character is important because it's zero so >:3
-         | Cent
-         | Pound
-         | Currency
-         | Yen
-         | BrokenBar
-         | Copyright
-         | Not
-         | Registered
-         | Mu
-         | Half
-         | Euq
-         | Euro
-         | BigAsc
-         | BigCCedilla
-         | BigEth
-         | BigEnye
-         | Times
-         | BigOSlash
-         | BigOE
-         | BigThorn
-         | Eszett
-         | LittleAsc
-         | LittleCCedilla
-         | LittleEth
-         | LittleIDotless
-         | LittleJDotless
-         | LittleEnye
-         | Obelus
-         | LittleOSlash
-         | LittleOE
-         | LittleThorn
-         | Space
-         | Excl
-         | DoubleQuote
-         | Hash
-         | Dollar
-         | Percent
-         | And
-         | SingleQuote
-         | OpenParen
-         | CloseParen
-         | Asterisk
-         | Plus
-         | Comma
-         | HyphenMinus
-         | Period
-         | Slash
-         | Zero
-         | One
-         | Two
-         | Three
-         | Four
-         | Five
-         | Six
-         | Seven
-         | Eight
-         | Nine
-         | Colon
-         | Semicolon
-         | Lt
-         | Equals
-         | Gt
-         | Que
-         | At
-         | BigA
-         | BigB
-         | BigC
-         | BigD -- heh. heh heh.
-         | BigE
-         | BigF
-         | BigG
-         | BigH
-         | BigI
-         | BigJ
-         | BigK
-         | BigL -- what I'm taking right now deciding to type this by hand for some fucking reason
-         | BigM
-         | BigN
-         | BigO
-         | BigP
-         | BigQ
-         | BigR
-         | BigS
-         | BigT
-         | BigU
-         | BigV
-         | BigW
-         | BigX
-         | BigY
-         | BigZ
-         | OpenBracket
-         | Backslash
-         | CloseBracket
-         | Caret
-         | Underscore
-         | Backtick
-         | LittleA
-         | LittleB
-         | LittleC
-         | LittleD
-         | LittleE
-         | LittleF
-         | LittleG
-         | LittleH
-         | LittleI
-         | LittleJ
-         | LittleK
-         | LittleL
-         | LittleM
-         | LittleN
-         | LittleO
-         | LittleP
-         | LittleQ
-         | LittleR
-         | LittleS
-         | LittleT
-         | LittleU
-         | LittleV
-         | LittleW
-         | LittleX
-         | LittleY
-         | LittleZ -- used Regenerate this time around LMAO
-         | OpenBrace
-         | Pipe
-         | CloseBrace
-         | Tilde
-         | Newline
-         | Degrees -- why is it just. there like it's a superscript 0 😭😭😭
-         | SuperOne
-         | SuperTwo
-         | SuperThree
-         | SuperFour
-         | SuperFive
-         | SuperSix
-         | SuperSeven
-         | SuperEight
-         | SuperNine
-         | SuperPlus
-         | SuperMinus
-         | SuperEquals
-         | SuperOpenParen
-         | SuperCloseParen
-         | BigBHook
-         | BigCHook
-         | BigDHook
-         | BigFHook
-         | BigGHook
-         | BigKHook
-         | BigMHook
-         | BigNHook
-         | BigPHook
-         | BigTHook
-         | BigLabiodentalApproximant
-         | BigZHook
-         | LittleBHook
-         | LittleCHook
-         | LittleDHook
-         | LittleFHook
-         | LittleGHook
-         | LittleHHook
-         | LittleKHook
-         | LittleMHook
-         | LittleNHook
-         | LittlePHook -- kinda looks like a fucked up thorn
-         | LittleQHook
-         | LittleRTail
-         | LittleSHook
-         | LittleTHook
-         | LittleLabiodentalApproximant
-         | LittleZHook
-         | BigAUnderdot
-         | BigBUnderdot
-         | BigDUnderdot
-         | BigEUnderdot
-         | BigHUnderdot
-         | BigIUnderdot
-         | BigKUnderdot
-         | BigLUnderdot
-         | BigMUnderdot
-         | BigNUnderdot
-         | BigOUnderdot
-         | BigRUnderdot
-         | BigSUnderdot
-         | BigTUnderdot
-         | BigUUnderdot
-         | BigVUnderdot
-         | BigWUnderdot
-         | BigYUnderdot
-         | BigZUnderdot
-         | BigAOverdot
-         | BigBOverdot
-         | BigCOverdot
-         | BigDOverdot
-         | BigEOverdot
-         | BigFOverdot
-         | BigGOverdot
-         | BigHOverdot
-         | BigIOverdot
-         | BigLOverdot
-         | BigMOverdot
-         | BigNOverdot
-         | BigOOverdot
-         | BigPOverdot
-         | BigROverdot
-         | BigSOverdot
-         | BigTOverdot
-         | BigWOverdot
-         | BigXOverdot
-         | BigYOverdot
-         | BigZOverdot
-         | LittleAUnderdot
-         | LittleBUnderdot
-         | LittleDUnderdot
-         | LittleEUnderdot
-         | LittleFUnderdot
-         | LittleIUnderdot
-         | LittleKUnderdot
-         | LittleLUnderdot
-         | LittleMUnderdot
-         | LittleNUnderdot
-         | LittleOUnderdot
-         | LittleRUnderdot -- thanks Ỵµt” Ḳ2ị),"ØJY for catching this TRAVESTY
-         | LittleSUnderdot
-         | LittleTUnderdot
-         | Section
-         | BigAUmlaut
-         | LittleWUnderdot
-         | LittleYUnderdot
-         | LittleZUnderdot
-         | LittleAOverdot
-         | LittleBOverdot
-         | LittleCOverdot
-         | LittleDOverdot
-         | LittleEOverdot
-         | LittleFOverdot
-         | LittleGOverdot
-         | LittleHOverdot
-         | LittleLOverdot
-         | LittleMOverdot
-         | LittleNOverdot
-         | LittleOOverdot
-         | LittlePOverdot
-         | LittleROverdot
-         | LittleSOverdot
-         | LittleTOverdot
-         | LittleWOverdot
-         | LittleXOverdot
-         | LittleYOverdot
-         | LittleZOverdot
-         | OpenGuillemet
-         | CloseGuillemet
-         | OpenSingleQuote
-         | CloseSingleQuote
-         | OpenDoubleQuote
-         | CloseDoubleQuote
+data Jel
+  = Lcxe -- yes this name is stupid BUT this character is important because it's zero so >:3
+  | Cent
+  | Pound
+  | Currency
+  | Yen
+  | BrokenBar
+  | Copyright
+  | Not
+  | Registered
+  | Mu
+  | Half
+  | Euq
+  | Euro
+  | BigAsc
+  | BigCCedilla
+  | BigEth
+  | BigEnye
+  | Times
+  | BigOSlash
+  | BigOE
+  | BigThorn
+  | Eszett
+  | LittleAsc
+  | LittleCCedilla
+  | LittleEth
+  | LittleIDotless
+  | LittleJDotless
+  | LittleEnye
+  | Obelus
+  | LittleOSlash
+  | LittleOE
+  | LittleThorn
+  | Space
+  | Excl
+  | DoubleQuote
+  | Hash
+  | Dollar
+  | Percent
+  | And
+  | SingleQuote
+  | OpenParen
+  | CloseParen
+  | Asterisk
+  | Plus
+  | Comma
+  | HyphenMinus
+  | Period
+  | Slash
+  | Zero
+  | One
+  | Two
+  | Three
+  | Four
+  | Five
+  | Six
+  | Seven
+  | Eight
+  | Nine
+  | Colon
+  | Semicolon
+  | Lt
+  | Equals
+  | Gt
+  | Que
+  | At
+  | BigA
+  | BigB
+  | BigC
+  | BigD -- heh. heh heh.
+  | BigE
+  | BigF
+  | BigG
+  | BigH
+  | BigI
+  | BigJ
+  | BigK
+  | BigL -- what I'm taking right now deciding to type this by hand for some fucking reason
+  | BigM
+  | BigN
+  | BigO
+  | BigP
+  | BigQ
+  | BigR
+  | BigS
+  | BigT
+  | BigU
+  | BigV
+  | BigW
+  | BigX
+  | BigY
+  | BigZ
+  | OpenBracket
+  | Backslash
+  | CloseBracket
+  | Caret
+  | Underscore
+  | Backtick
+  | LittleA
+  | LittleB
+  | LittleC
+  | LittleD
+  | LittleE
+  | LittleF
+  | LittleG
+  | LittleH
+  | LittleI
+  | LittleJ
+  | LittleK
+  | LittleL
+  | LittleM
+  | LittleN
+  | LittleO
+  | LittleP
+  | LittleQ
+  | LittleR
+  | LittleS
+  | LittleT
+  | LittleU
+  | LittleV
+  | LittleW
+  | LittleX
+  | LittleY
+  | LittleZ -- used Regenerate this time around LMAO
+  | OpenBrace
+  | Pipe
+  | CloseBrace
+  | Tilde
+  | Newline
+  | Degrees -- why is it just. there like it's a superscript 0 😭😭😭
+  | SuperOne
+  | SuperTwo
+  | SuperThree
+  | SuperFour
+  | SuperFive
+  | SuperSix
+  | SuperSeven
+  | SuperEight
+  | SuperNine
+  | SuperPlus
+  | SuperMinus
+  | SuperEquals
+  | SuperOpenParen
+  | SuperCloseParen
+  | BigBHook
+  | BigCHook
+  | BigDHook
+  | BigFHook
+  | BigGHook
+  | BigKHook
+  | BigMHook
+  | BigNHook
+  | BigPHook
+  | BigTHook
+  | BigLabiodentalApproximant
+  | BigZHook
+  | LittleBHook
+  | LittleCHook
+  | LittleDHook
+  | LittleFHook
+  | LittleGHook
+  | LittleHHook
+  | LittleKHook
+  | LittleMHook
+  | LittleNHook
+  | LittlePHook -- kinda looks like a fucked up thorn
+  | LittleQHook
+  | LittleRTail
+  | LittleSHook
+  | LittleTHook
+  | LittleLabiodentalApproximant
+  | LittleZHook
+  | BigAUnderdot
+  | BigBUnderdot
+  | BigDUnderdot
+  | BigEUnderdot
+  | BigHUnderdot
+  | BigIUnderdot
+  | BigKUnderdot
+  | BigLUnderdot
+  | BigMUnderdot
+  | BigNUnderdot
+  | BigOUnderdot
+  | BigRUnderdot
+  | BigSUnderdot
+  | BigTUnderdot
+  | BigUUnderdot
+  | BigVUnderdot
+  | BigWUnderdot
+  | BigYUnderdot
+  | BigZUnderdot
+  | BigAOverdot
+  | BigBOverdot
+  | BigCOverdot
+  | BigDOverdot
+  | BigEOverdot
+  | BigFOverdot
+  | BigGOverdot
+  | BigHOverdot
+  | BigIOverdot
+  | BigLOverdot
+  | BigMOverdot
+  | BigNOverdot
+  | BigOOverdot
+  | BigPOverdot
+  | BigROverdot
+  | BigSOverdot
+  | BigTOverdot
+  | BigWOverdot
+  | BigXOverdot
+  | BigYOverdot
+  | BigZOverdot
+  | LittleAUnderdot
+  | LittleBUnderdot
+  | LittleDUnderdot
+  | LittleEUnderdot
+  | LittleFUnderdot
+  | LittleIUnderdot
+  | LittleKUnderdot
+  | LittleLUnderdot
+  | LittleMUnderdot
+  | LittleNUnderdot
+  | LittleOUnderdot
+  | LittleRUnderdot -- thanks Ỵµt” Ḳ2ị),"ØJY for catching this TRAVESTY
+  | LittleSUnderdot
+  | LittleTUnderdot
+  | Section
+  | BigAUmlaut
+  | LittleWUnderdot
+  | LittleYUnderdot
+  | LittleZUnderdot
+  | LittleAOverdot
+  | LittleBOverdot
+  | LittleCOverdot
+  | LittleDOverdot
+  | LittleEOverdot
+  | LittleFOverdot
+  | LittleGOverdot
+  | LittleHOverdot
+  | LittleLOverdot
+  | LittleMOverdot
+  | LittleNOverdot
+  | LittleOOverdot
+  | LittlePOverdot
+  | LittleROverdot
+  | LittleSOverdot
+  | LittleTOverdot
+  | LittleWOverdot
+  | LittleXOverdot
+  | LittleYOverdot
+  | LittleZOverdot
+  | OpenGuillemet
+  | CloseGuillemet
+  | OpenSingleQuote
+  | CloseSingleQuote
+  | OpenDoubleQuote
+  | CloseDoubleQuote
 
 unicode :: Jel -> Char
 
@@ -1088,24 +1089,26 @@ jelString :: Jel -> String
 jelString = singleton <<< unicode
 
 -- feels KINDA like an abuse of Show but like also. eh
-instance Show Jel where 
+instance Show Jel where
   show = singleton <<< unicode
 
-data WeirdWackyAlias = Pilcrow
-                     | LittleUUnderdot -- so THAT'S why the lb bookmarklet is broken like that LMAO
-                     | LittleVUnderdot
+data WeirdWackyAlias
+  = Pilcrow
+  | LittleUUnderdot -- so THAT'S why the lb bookmarklet is broken like that LMAO
+  | LittleVUnderdot
 
 normalize :: WeirdWackyAlias -> Jel
 normalize Pilcrow = Newline
 normalize LittleUUnderdot = Section
 normalize LittleVUnderdot = BigAUmlaut
 
-data BuiltinForm = Single Jel
-                 | O0 Jel
-                 | A1 Jel
-                 | A2 Jel
-                 | O1 Jel
-                 | O2 Jel
+data BuiltinForm
+  = Single Jel
+  | O0 Jel
+  | A1 Jel
+  | A2 Jel
+  | O1 Jel
+  | O2 Jel
 
 builtinPrefix :: BuiltinForm -> Maybe Jel
 builtinPrefix (Single _) = Nothing
@@ -1116,7 +1119,7 @@ builtinPrefix (O1 _) = Just BigOE
 builtinPrefix (O2 _) = Just LittleOE
 
 builtinMainChar :: BuiltinForm -> Jel
-builtinMainChar (Single c) = c 
+builtinMainChar (Single c) = c
 builtinMainChar (O0 c) = c
 builtinMainChar (A1 c) = c
 builtinMainChar (A2 c) = c
@@ -1125,12 +1128,7 @@ builtinMainChar (O2 c) = c
 
 -- for collation in tooltips. am I even using "collation" right
 foldVariants :: forall a. Semigroup a => (BuiltinForm -> a) -> Jel -> a
-foldVariants f c = f (Single c) <>
-                   f (O0 c) <>
-                   f (A1 c) <>
-                   f (A2 c) <>
-                   f (O1 c) <>
-                   f (O2 c)
+foldVariants = (>>>) O0 <> (>>>) A1 <> (>>>) A2 <> (>>>) O1 <> (>>>) O2
 
 instance Show BuiltinForm where
   show b = foldMap show (builtinPrefix b) <> show (builtinMainChar b)

@@ -1,6 +1,6 @@
 module Jelly.Sub
- ( trySubstitute
- ) where
+  ( trySubstitute
+  ) where
 
 import Prelude
 
@@ -30,7 +30,7 @@ instance Functor (TryAlias a) where
   map = (wrap <<< _) <<< (_ <<< unwrap) <<< map <<< map
 
 instance Apply (TryAlias a) where
-  apply f a = wrap \x -> unwrap f x <*> unwrap a x 
+  apply f a = wrap \x -> unwrap f x <*> unwrap a x
 
 instance Applicative (TryAlias a) where
   pure = wrap <<< const <<< pure
@@ -62,11 +62,11 @@ makeAlias pat to = wrap \text -> do
 makeCaseInsensitiveAlias :: String -> String -> String ->? SingleSub
 makeCaseInsensitiveAlias pat to = wrap \text -> do
   foldedPrefix <- stripSuffix (Pattern pat) $ toLower text
-  pure {
-    prefix: take (length foldedPrefix) text,
-    sub: to,
-    deltaLength: length to - length pat
-  }
+  pure
+    { prefix: take (length foldedPrefix) text
+    , sub: to,
+    , deltaLength: length to - length pat
+    }
 
 -- we love abusable notation
 makeTellAlias :: forall a. Show a => String -> a -> Writer (String ->? SingleSub) Unit
