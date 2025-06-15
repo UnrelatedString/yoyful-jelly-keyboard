@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "spago bundle --minify"
+  },
   "devDependencies": {
     "esbuild": "0.25.0"
   }

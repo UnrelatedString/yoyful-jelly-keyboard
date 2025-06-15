@@ -64,7 +64,7 @@ makeCaseInsensitiveAlias pat to = wrap \text -> do
   foldedPrefix <- stripSuffix (Pattern pat) $ toLower text
   pure
     { prefix: take (length foldedPrefix) text
-    , sub: to,
+    , sub: to
     , deltaLength: length to - length pat
     }
 
