@@ -1,7 +1,9 @@
 module Jelly.Codepage
   ( Jel(..)
   , BuiltinForm(..)
+  , WeirdWackyAlias(..)
   , unicode
+  , normalize
   , foldVariants
   , jelString
   ) where

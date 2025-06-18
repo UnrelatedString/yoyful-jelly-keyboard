@@ -7,6 +7,7 @@ module Jelly.Builtins
   , stringTerminator
   ) where
 
+import Prelude
 import Data.Maybe (Maybe(..))
 import Jelly.Codepage (Jel(..), BuiltinForm(..))
 import Type.Markdown (Markdown, md)
