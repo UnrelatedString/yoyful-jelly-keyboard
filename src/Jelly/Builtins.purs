@@ -27,6 +27,9 @@ data BuiltinType
 
 data Adicity = Niladic | Monadic | Dyadic
 
+fibLoop :: Markdown -> Markdown
+fibLoop desc = desc <> (md @" If dyadic, the right argument to each subsequent iteration is the left argument to the previous iteration.")
+
 builtin :: BuiltinForm -> Maybe Builtin
 builtin (Single Copyright) = Just $ Builtin Quick
   { mnemonic: Just "copy"
@@ -38,7 +41,7 @@ builtin (Single Copyright) = Just $ Builtin Quick
   }
 builtin (Single Eszett) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["recur", "furlong"]
   , originalDescription: md @
     "This link, with the same arity."
   , revisedDescription: md @
@@ -46,7 +49,7 @@ builtin (Single Eszett) = Just $ Builtin Quick
   }
 builtin (Single Cent) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["last", "constant", "furlong"]
   , originalDescription: md @
     "Last link as a nilad."
   , revisedDescription: md @
@@ -54,7 +57,7 @@ builtin (Single Cent) = Just $ Builtin Quick
   }
 builtin (Single BigCCedilla) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["last", "helper", "furlong"]
   , originalDescription: md @
     "Last link as a monad."
   , revisedDescription: md @
@@ -62,7 +65,7 @@ builtin (Single BigCCedilla) = Just $ Builtin Quick
   }
 builtin (Single LittleCCedilla) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["last", "helper", "furlong"]
   , originalDescription: md @
     "Last link as a dyad."
   , revisedDescription: md @
@@ -70,7 +73,7 @@ builtin (Single LittleCCedilla) = Just $ Builtin Quick
   }
 builtin (Single BigEnye) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["next", "helper", "furlong"]
   , originalDescription: md @
     "Next link as a monad."
   , revisedDescription: md @
@@ -78,7 +81,7 @@ builtin (Single BigEnye) = Just $ Builtin Quick
   }
 builtin (Single LittleEnye) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["next", "helper", "furlong"]
   , originalDescription: md @
     "Next link as a dyad."
   , revisedDescription: md @
@@ -86,7 +89,7 @@ builtin (Single LittleEnye) = Just $ Builtin Quick
   }
 builtin (Single Pound) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["index", "at", "constant", "furlong"]
   , originalDescription: md @
     "Link at index n as a nilad."
   , revisedDescription: md @
@@ -94,7 +97,7 @@ builtin (Single Pound) = Just $ Builtin Quick
   }
 builtin (Single BigLOverdot) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["index", "at", "helper", "furlong"]
   , originalDescription: md @
     "Link at index n as a monad."
   , revisedDescription: md @
@@ -102,11 +105,27 @@ builtin (Single BigLOverdot) = Just $ Builtin Quick
   }
 builtin (Single LittleLOverdot) = Just $ Builtin Quick
   { mnemonic: Nothing
-  , keywords: []
+  , keywords: ["index", "at", "helper", "furlong"]
   , originalDescription: md @
     "Link at index n as a dyad."
   , revisedDescription: md @
     "Invoke the (non-main) furlong at the given index from the top, as a dyad."
+  }
+builtin (Single BrokenBar) = Just $ Builtin Quick
+  { mnemonic: Just "sparse"
+  , keywords: ["mask"]
+  , originalDescription: md @
+    "Apply link to items at specific indices."
+  , revisedDescription: md @
+    "Apply link, then mask resulting items into original left argument at given indices."
+  }
+builtin (Single Lcxe) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: ["repeat", "loop", "iterate"]
+  , originalDescription: md @
+    "Repeat n times."
+  , revisedDescription: fibLoop $ md @
+    "Iterate the given number of times."
   }
 builtin _ = Nothing
 
