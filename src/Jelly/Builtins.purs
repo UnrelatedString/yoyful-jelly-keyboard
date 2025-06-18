@@ -28,6 +28,86 @@ data BuiltinType
 data Adicity = Niladic | Monadic | Dyadic
 
 builtin :: BuiltinForm -> Maybe Builtin
+builtin (Single Copyright) = Just $ Builtin Quick
+  { mnemonic: Just "copy"
+  , keywords: []
+  , originalDescription: md @
+    "Copy link result to register (`®` atom to retrieve)."
+  , revisedDescription: md @
+    "Copy the result to the register, returning it unchanged."
+  }
+builtin (Single Eszett) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "This link, with the same arity."
+  , revisedDescription: md @
+    "Recursively invoke the current furlong, with adicity `-1`."
+  }
+builtin (Single Cent) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Last link as a nilad."
+  , revisedDescription: md @
+    "Invoke the furlong above this one, as a nilad."
+  }
+builtin (Single BigCCedilla) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Last link as a monad."
+  , revisedDescription: md @
+    "Invoke the furlong above this one, as a monad."
+  }
+builtin (Single LittleCCedilla) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Last link as a dyad."
+  , revisedDescription: md @
+    "Invoke the furlong above this one, as a dyad."
+  }
+builtin (Single BigEnye) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Next link as a monad."
+  , revisedDescription: md @
+    "Invoke the furlong below this one, as a monad."
+  }
+builtin (Single LittleEnye) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Next link as a dyad."
+  , revisedDescription: md @
+    "Invoke the furlong below this one, as a dyad."
+  }
+builtin (Single Pound) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Link at index n as a nilad."
+  , revisedDescription: md @
+    "Invoke the (non-main) furlong at the given index from the top, as a nilad."
+  }
+builtin (Single BigLOverdot) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Link at index n as a monad."
+  , revisedDescription: md @
+    "Invoke the (non-main) furlong at the given index from the top, as a monad."
+  }
+builtin (Single LittleLOverdot) = Just $ Builtin Quick
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Link at index n as a dyad."
+  , revisedDescription: md @
+    "Invoke the (non-main) furlong at the given index from the top, as a dyad."
+  }
 builtin _ = Nothing
 
 -- separate from builtin so I don't have to build that "is this also a terminator??"
