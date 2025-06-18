@@ -81,10 +81,29 @@ quickchainLCC n n' a = Builtin (Quick [Varargs "links"])
   , originalDescription: -- TODO: wrap this in Markdown when that's actually different ig
     "Last " <> n' <> " links (if not part of an LCC) as a " <> adicNoun a <> "."
   , revisedDescription:
-    "Group at least " <> n' <> " links into a " <> adicNoun a <> ", consuming more for every nilad followed only by monads or dyad-nilad pairs."
+    "Group at least " <> n' <> " links into a " <> adicNoun a <> ", consuming more for every nilad followed by a monad or by dyad-nilad pairs."
   }
 
 builtin :: BuiltinForm -> Maybe Builtin
+
+-- SINGLE BYTE NILADS --
+
+-- SINGLE BYTE MONADS --
+
+-- SINGLE BYTE DYADS --
+
+-- ASSORTED NILADS --
+
+-- ARITHMETIC MONADS --
+
+-- ARITHMETIC DYADS --
+
+-- OTHER MONADS --
+
+-- OTHER DYADS --
+
+-- QUICKS --
+
 builtin (Single Copyright) = Just $ Builtin (Quick [Q "link"])
   { mnemonic: "copy"
   , keywords: []
@@ -219,7 +238,7 @@ builtin (Single Currency) = Just $ Builtin (Quick [Varargs "links"])
   , originalDescription: md @
     "Nilad followed by links as a nilad."
   , revisedDescription: md @
-    "Group at least two links into a niladic link, consuming links until a nilad is found."
+    "Group at least two links into a (weak/coercible) nilad, consuming links until a nilad is found."
   }
 builtin (Single Dollar) = Just $
   quickchainLCC 2 "two" Monadic
@@ -266,6 +285,9 @@ builtin (Single SuperPlus) = Just $ Builtin (Quick [Q "link"])
   , revisedDescription: md @
     "Push `link` twice to the chain. Does *not* peek; will pop and subordinate a previous chain if needed."
   }
+
+-- SYNTAX --
+
 builtin _ = Nothing
 
 -- separate from builtin so I don't have to build that "is this also a terminator??"
