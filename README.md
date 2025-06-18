@@ -2,4 +2,6 @@
 
 # yoyful-jelly-keyboard
 
-A less broken and more flexible Jelly keyboard bookmarklet
+A less broken and more flexible Jelly keyboard bookmarklet.
+
+The Jelly language is Copyright (c) 2017 DennisMitchell under the MIT license.

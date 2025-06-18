@@ -29,6 +29,16 @@ data BuiltinType
 
 data Adicity = Niladic | Monadic | Dyadic
 
+adicSuffix :: Adicity -> String
+adicSuffix Niladic = "0"
+adicSuffix Monadic = "1"
+adicSuffix Dyadic = "2"
+
+adicNoun :: Adicity -> String
+adicNoun Niladic = "nilad"
+adicNoun Monadic = "monad"
+adicNoun Dyadic = "dyad"
+
 data QuickArg
   = Q String
   | OptionalNilad String
@@ -37,6 +47,16 @@ data QuickArg
 
 fibLoop :: Markdown -> Markdown
 fibLoop desc = desc <> (md @" If dyadic, the right argument to each subsequent iteration is the left argument to the previous iteration.")
+
+quickchainLCC :: Int -> String -> Adicity -> Builtin
+quickchainLCC n n' a = Builtin (Quick [Varargs "links"])
+  { mnemonic: "group" <> show n <> adicSuffix a
+  , keywords: ["group", "chain"]
+  , originalDescription: -- TODO: wrap this in Markdown when that's actually different ig
+    "Last " <> n' <> " links (if not part of an LCC) as a " <> adicNoun a <> "."
+  , revisedDescription:
+    "Group at least " <> n' <> " links into a " <> adicNoun a <> ", consuming more for every nilad followed only by monads or dyad-nilad pairs."
+  }
 
 builtin :: BuiltinForm -> Maybe Builtin
 builtin (Single Copyright) = Just $ Builtin (Quick [Q "link"])
@@ -145,12 +165,48 @@ builtin (Single Euq) = Just $ Builtin (Quick [Q "body", Q "condition"])
   }
 builtin (Single Slash) = Just $ Builtin (Quick [Q "dyad", OptionalNilad "n"])
   { mnemonic: "reduce"
-  , keywords: ["reduce", "fold", "foldl", "for", "windows"]
+  , keywords: ["reduce", "fold", "foldl1", "for", "windows"]
   , originalDescription: md @
     "Reduce or n-wise reduce."
   , revisedDescription: md @
-    ""
+    "Left-associative fold by `dyad`. Fold over non-overlapping windows if `n` given. Always monadic."
   }
+builtin (Single LittleFHook) = Just $ Builtin (Quick [Q "dyad", OptionalNilad "n"])
+  { mnemonic: "fold"
+  , keywords: ["reduce", "fold", "foldl", "for", "windows"]
+  , originalDescription: md @
+    "Reduce or n-wise reduce using the right argument as the starting value."
+  , revisedDescription: md @
+    "Left-associative fold by `dyad`, starting with the right argument. Fold over non-overlapping windows if `n` given."
+  }
+builtin (Single Backslash) = Just $ Builtin (Quick [Q "dyad", OptionalNilad "n"])
+  { mnemonic: "scan"
+  , keywords: ["scan", "reduce", "cumulative", "scanl1", "for", "windows"]
+  , originalDescription: md @
+    "Cumulative reduce or n-wise overlapping reduce."
+  , revisedDescription: md @
+    "Left-associative scan by `dyad`. Fold over overlapping windows instead if `n` given. Always monadic."
+  }
+builtin (Single Currency) = Just $ Builtin (Quick [Varargs "links"])
+  { mnemonic: "group0"
+  , keywords: ["group", "chain", "nilad", "constant"]
+  , originalDescription: md @
+    "Nilad followed by links as a nilad."
+  , revisedDescription: md @
+    "Group at least two links into a niladic link, consuming links until a nilad is found."
+  }
+builtin (Single Dollar) = Just $
+  quickchainLCC 2 "two" Monadic
+builtin (Single BigDHook) = Just $
+  quickchainLCC 3 "three" Monadic
+builtin (Single BigLabiodentalApproximant) = Just $
+  quickchainLCC 4 "four" Monadic
+builtin (Single Yen) = Just $
+  quickchainLCC 2 "two" Dyadic
+builtin (Single LittleDHook) = Just $
+  quickchainLCC 3 "three" Dyadic
+builtin (Single LittleLabiodentalApproximant) = Just $
+  quickchainLCC 4 "four" Dyadic
 builtin _ = Nothing
 
 -- separate from builtin so I don't have to build that "is this also a terminator??"
@@ -162,7 +218,7 @@ stringTerminator OpenGuillemet = Just
   , originalDescription: md @
     "[No original description -- not an intentional builtin]"
   , revisedDescription: md @
-    "Terminates a plain string; equivalent to `”`."
+    "Terminate a plain string; equivalent to `”`."
   }
 stringTerminator CloseGuillemet = Just
   { mnemonic: "termDict"
@@ -170,7 +226,7 @@ stringTerminator CloseGuillemet = Just
   , originalDescription: md @
     "Terminates a dictionary-compressed string."
   , revisedDescription: md @
-    "Terminates a dictionary-compressed string."
+    "Terminate a dictionary-compressed string."
   }
 stringTerminator OpenSingleQuote = Just
   { mnemonic: "termOrd"
@@ -178,7 +234,7 @@ stringTerminator OpenSingleQuote = Just
   , originalDescription: md @
     "Terminates a code-page index list. Jelly's version of `ord()`."
   , revisedDescription: md @
-    "Terminates a string to be interpreted as a numeric list of Jelly codepoints."
+    "Terminate a string to be interpreted as a numeric list of Jelly codepoints."
   }
 stringTerminator CloseSingleQuote = Just
   { mnemonic: "term250"
@@ -186,7 +242,7 @@ stringTerminator CloseSingleQuote = Just
   , originalDescription: md @
     "Terminates a base-250 number."
   , revisedDescription: md @
-    "Terminates a base-250 number."
+    "Terminate a base-250 number."
   }
 stringTerminator OpenDoubleQuote = Just
   { mnemonic: "stringSep"
@@ -194,7 +250,7 @@ stringTerminator OpenDoubleQuote = Just
   , originalDescription: md @
     "Begins a string literal, and separates a list of strings inside a string literal."
   , revisedDescription: md @
-    "Separates elements of a list of strings within one literal."
+    "Separate elements of a list of strings within one literal."
   }
 stringTerminator CloseDoubleQuote = Just
   { mnemonic: "termPlain"
@@ -202,6 +258,6 @@ stringTerminator CloseDoubleQuote = Just
   , originalDescription: md @
     "Terminates a regular string or a list of strings. Without `“`, a character literal."
   , revisedDescription: md @
-    "Terminates a plain string."
+    "Terminate a plain string."
   }
 stringTerminator _ = Nothing
