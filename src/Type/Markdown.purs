@@ -7,10 +7,10 @@ module Type.Markdown
   ) where
 
 import Prelude
-import Data.Reflectable (reflectType)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Type.Proxy (Proxy(..))
 
 type Markdown = String
 
-md :: forall (@sym :: Symbol). Markdown
-md = reflectType (Proxy @sym)
+md :: forall @sym. IsSymbol sym => Markdown
+md = reflectSymbol (Proxy @sym)
