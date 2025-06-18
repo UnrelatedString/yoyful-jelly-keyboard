@@ -32,7 +32,7 @@ package:
       - my-spec-reporter
 workspace:
   packageSet:
-    registry: 64.10.0
+    registry: 65.0.1
   extraPackages:
     my-spec-reporter:
       git: https://github.com/UnrelatedString/my-spec-reporter.git

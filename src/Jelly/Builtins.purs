@@ -56,10 +56,10 @@ formatCompact :: QuickArgsFormatter String
 formatCompact args quick = foldMap format' args <> show quick
   where
   format' :: QuickArg -> String
-  format' (Q s) = "<" <> s <> ">"
-  format' (OptionalNilad s) = "<" <> s <> ">??"
-  format' (SemiOptional s) = "<" <> s <> ">?"
-  format' (Varargs s) = "<" <> s <> "...>"
+  format' (Q s) = s <> " "
+  format' (OptionalNilad s) = s <> "?? "
+  format' (SemiOptional s) = s <> "? "
+  format' (Varargs s) = s <> "+ "
 
 -- TODO: make this Markdown (later!!!)
 formatVerbose :: QuickArgsFormatter String
@@ -240,7 +240,15 @@ builtin (Single Hash) = Just $ Builtin (Quick [Q "condition", SemiOptional "amou
     -- ...do I ACTUALLY want to preserve the hyperlink :p
     "[`nfind`](https://github.com/DennisMitchell/jelly/blob/dd231009e232e231b851bc360912d91e100b4515/jelly.py#L349): Count up, collecting first n matches."
   , revisedDescription: md @
-    ""
+    "Counting up from the left argument (or 0 if invoked niladically), collect `amount` values for which `condition` holds."
+  }
+builtin (Single Que) = Just $ Builtin (Quick [Q "if-clause", Q "else-clause", Q "condition"])
+  { mnemonic: "repeat"
+  , keywords: ["repeat", "loop", "iterate"]
+  , originalDescription: md @
+    "Repeat n times."
+  , revisedDescription: fibLoop $ md @
+    "Iteratively invoke `link` on its result `n` times."
   }
 builtin _ = Nothing
 
