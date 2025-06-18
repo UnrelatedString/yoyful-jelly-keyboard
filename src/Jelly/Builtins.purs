@@ -4,11 +4,14 @@ module Jelly.Builtins
   , BuiltinType(..)
   , Adicity(..)
   , QuickArg(..)
+  , QuickArgsFormatter
+  , formatQuickArgs
   , builtin
   , stringTerminator
   ) where
 
 import Prelude
+import Data.Foldable (class Foldable, foldMap)
 import Data.Maybe (Maybe(..))
 import Jelly.Codepage (Jel(..), BuiltinForm(..))
 import Type.Markdown (Markdown, md)
@@ -44,6 +47,18 @@ data QuickArg
   | OptionalNilad String
   | SemiOptional String
   | Varargs String
+
+type QuickArgsFormatter = forall f. Foldable f => f QuickArg -> BuiltinForm -> String
+
+-- yeah whatever this may as well live here for now at least
+originalFormat :: QuickArgsFormatter
+originalFormat args quick = foldMap format' args <> show quick
+  where
+  format' :: QuickArg -> String
+  format' (Q s) = "<" <> s <> ">"
+  format' (Q s) = "<" <> s <> ">"
+  format' (Q s) = "<" <> s <> ">"
+  format' (Q s) = "<" <> s <> ">"
 
 fibLoop :: Markdown -> Markdown
 fibLoop desc = desc <> (md @" If dyadic, the right argument to each subsequent iteration is the left argument to the previous iteration.")
@@ -207,6 +222,15 @@ builtin (Single LittleDHook) = Just $
   quickchainLCC 3 "three" Dyadic
 builtin (Single LittleLabiodentalApproximant) = Just $
   quickchainLCC 4 "four" Dyadic
+builtin (Single Hash) = Just $ Builtin (Quick [Q "condition", SemiOptional "amount"])
+  { mnemonic: "nfind"
+  , keywords: ["bruteforce", "first", "find"]
+  , originalDescription: md @
+    -- ...do I ACTUALLY want to preserve the hyperlink :p
+    "[`nfind`](https://github.com/DennisMitchell/jelly/blob/dd231009e232e231b851bc360912d91e100b4515/jelly.py#L349): Count up, collecting first n matches."
+  , revisedDescription: md @
+    ""
+  }
 builtin _ = Nothing
 
 -- separate from builtin so I don't have to build that "is this also a terminator??"
@@ -234,7 +258,7 @@ stringTerminator OpenSingleQuote = Just
   , originalDescription: md @
     "Terminates a code-page index list. Jelly's version of `ord()`."
   , revisedDescription: md @
-    "Terminate a string to be interpreted as a numeric list of Jelly codepoints."
+    "Terminate a string to be interpreted as a numeric list of Jelly SBCS codepoints."
   }
 stringTerminator CloseSingleQuote = Just
   { mnemonic: "term250"
