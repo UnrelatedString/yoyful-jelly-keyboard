@@ -7,8 +7,6 @@ module Jelly.Builtins
   , stringTerminator
   ) where
 
-import Prelude
-import Control.Alternative ((<|>))
 import Data.Maybe (Maybe(..))
 import Jelly.Codepage (Jel(..), BuiltinForm(..))
 import Type.Markdown (Markdown, md)
@@ -16,8 +14,8 @@ import Type.Markdown (Markdown, md)
 data Builtin = Builtin BuiltinType Builtin'
 
 type Builtin' =
-  { mnemonic :: Maybe Markdown
-  , keywords :: Array Markdown
+  { mnemonic :: Maybe String
+  , keywords :: Array String
   , originalDescription :: Markdown
   , revisedDescription :: Markdown
   }
@@ -34,17 +32,53 @@ builtin _ = Nothing
 
 -- separate from builtin so I don't have to build that "is this also a terminator??"
 -- into the builtin data itself lmao
-stringTerminator :: Jel -> Maybe Markdown
-stringTerminator OpenGuillemet = Just $
-  md @"Terminates a plain string; equivalent to `”`."
-stringTerminator CloseGuillemet = Just $
-  md @"Terminates a dictionary-compressed string."
-stringTerminator OpenSingleQuote = Just $
-  md @"Terminates a list of Jelly codepoints."
-stringTerminator CloseSingleQuote = Just $
-  md @"Terminates a base-250 number."
-stringTerminator OpenDoubleQuote = Just $
-  md @"Separates elements of a list of strings within one literal."
-stringTerminator CloseDoubleQuote = Just $
-  md @"Terminates a plain string."
+stringTerminator :: Jel -> Maybe Builtin'
+stringTerminator OpenGuillemet = Just
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "[No original description -- not an intentional builtin]"
+  , revisedDescription: md @
+    "Terminates a plain string; equivalent to `”`."
+  }
+stringTerminator CloseGuillemet = Just
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Terminates a dictionary-compressed string."
+  , revisedDescription: md @
+    "Terminates a dictionary-compressed string."
+  }
+stringTerminator OpenSingleQuote = Just
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Terminates a code-page index list. Jelly's version of `ord()`."
+  , revisedDescription: md @
+    "Terminates a string to be interpreted as a numeric list of Jelly codepoints."
+  }
+stringTerminator CloseSingleQuote = Just
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Terminates a base-250 number."
+  , revisedDescription: md @
+    "Terminates a base-250 number."
+  }
+stringTerminator OpenDoubleQuote = Just
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Begins a string literal, and separates a list of strings inside a string literal."
+  , revisedDescription: md @
+    "Separates elements of a list of strings within one literal."
+  }
+stringTerminator CloseDoubleQuote = Just
+  { mnemonic: Nothing
+  , keywords: []
+  , originalDescription: md @
+    "Terminates a regular string or a list of strings. Without `“`, a character literal."
+  , revisedDescription: md @
+    "Terminates a plain string."
+  }
 stringTerminator _ = Nothing
