@@ -235,7 +235,7 @@ builtin (Single LittleLabiodentalApproximant) = Just $
   quickchainLCC 4 "four" Dyadic
 builtin (Single Hash) = Just $ Builtin (Quick [Q "condition", SemiOptional "amount"])
   { mnemonic: "nfind"
-  , keywords: ["bruteforce", "first", "find"]
+  , keywords: ["brute", "force", "first", "find"]
   , originalDescription: md @
     -- ...do I ACTUALLY want to preserve the hyperlink :p
     "[`nfind`](https://github.com/DennisMitchell/jelly/blob/dd231009e232e231b851bc360912d91e100b4515/jelly.py#L349): Count up, collecting first n matches."
@@ -243,12 +243,28 @@ builtin (Single Hash) = Just $ Builtin (Quick [Q "condition", SemiOptional "amou
     "Counting up from the left argument (or 0 if invoked niladically), collect `amount` values for which `condition` holds."
   }
 builtin (Single Que) = Just $ Builtin (Quick [Q "if-clause", Q "else-clause", Q "condition"])
-  { mnemonic: "repeat"
-  , keywords: ["repeat", "loop", "iterate"]
+  { mnemonic: "if"
+  , keywords: ["if", "else", "conditional", "ternary"]
   , originalDescription: md @
-    "Repeat n times."
-  , revisedDescription: fibLoop $ md @
-    "Iteratively invoke `link` on its result `n` times."
+    "Ternary if."
+  , revisedDescription: md @
+    "Evaluate `condition`, then evaluate `if-clause` if truthy or `else-clause` if not."
+  }
+builtin (Single BigFHook) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "invariant"
+  , keywords: ["invariant", "unchanged", "equal"]
+  , originalDescription: md @
+    "Check if the left argument is equal to the result."
+  , revisedDescription: md @
+    "Test whether or not the result of `link` is equal to the left argument."
+  }
+builtin (Single SuperPlus) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "duplicate"
+  , keywords: ["duplicate", "repeat", "copy"]
+  , originalDescription: md @
+    "Duplicates the previous link."
+  , revisedDescription: md @
+    "Push `link` twice to the chain. Does *not* peek; will pop and subordinate a previous chain if needed."
   }
 builtin _ = Nothing
 

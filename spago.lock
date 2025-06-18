@@ -189,7 +189,7 @@
     },
     "package_set": {
       "address": {
-        "registry": "64.10.0"
+        "registry": "65.0.1"
       },
       "compiler": ">=0.15.15 <0.16.0",
       "content": {
@@ -285,7 +285,7 @@
         "distributive": "6.0.0",
         "dodo-printer": "2.2.3",
         "dom-filereader": "7.0.0",
-        "dom-indexed": "12.0.0",
+        "dom-indexed": "13.0.0",
         "dom-simple": "0.4.0",
         "dotenv": "4.0.3",
         "droplet": "0.6.0",
@@ -716,7 +716,7 @@
         "webextension-polyfill": "0.1.0",
         "webgpu": "0.0.1",
         "which": "2.0.0",
-        "whine-core": "0.0.30",
+        "whine-core": "0.0.32",
         "xterm": "1.0.0",
         "yoga-fetch": "1.0.1",
         "yoga-json": "5.1.0",
