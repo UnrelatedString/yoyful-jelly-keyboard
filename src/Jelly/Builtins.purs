@@ -23,7 +23,7 @@ type Builtin' =
 
 data BuiltinType
   = Atom Adicity
-  | Quick -- TODO: systematically represent quick argument counts and how they get adicity
+  | Quick (Array String) -- TODO: systematically represent quick argument counts and how they get adicity
   | Syntax
 
 data Adicity = Niladic | Monadic | Dyadic
@@ -32,15 +32,15 @@ fibLoop :: Markdown -> Markdown
 fibLoop desc = desc <> (md @" If dyadic, the right argument to each subsequent iteration is the left argument to the previous iteration.")
 
 builtin :: BuiltinForm -> Maybe Builtin
-builtin (Single Copyright) = Just $ Builtin Quick
+builtin (Single Copyright) = Just $ Builtin (Quick ["link"])
   { mnemonic: Just "copy"
   , keywords: []
   , originalDescription: md @
     "Copy link result to register (`®` atom to retrieve)."
   , revisedDescription: md @
-    "Copy the result to the register, returning it unchanged."
+    "Copy `link`'s result to the register, returning it unchanged."
   }
-builtin (Single Eszett) = Just $ Builtin Quick
+builtin (Single Eszett) = Just $ Builtin (Quick [])
   { mnemonic: Nothing
   , keywords: ["recur", "furlong"]
   , originalDescription: md @
@@ -48,7 +48,7 @@ builtin (Single Eszett) = Just $ Builtin Quick
   , revisedDescription: md @
     "Recursively invoke the current furlong, with adicity `-1`."
   }
-builtin (Single Cent) = Just $ Builtin Quick
+builtin (Single Cent) = Just $ Builtin (Quick [])
   { mnemonic: Nothing
   , keywords: ["last", "constant", "furlong"]
   , originalDescription: md @
@@ -56,7 +56,7 @@ builtin (Single Cent) = Just $ Builtin Quick
   , revisedDescription: md @
     "Invoke the furlong above this one, as a nilad."
   }
-builtin (Single BigCCedilla) = Just $ Builtin Quick
+builtin (Single BigCCedilla) = Just $ Builtin (Quick [])
   { mnemonic: Nothing
   , keywords: ["last", "helper", "furlong"]
   , originalDescription: md @
@@ -64,7 +64,7 @@ builtin (Single BigCCedilla) = Just $ Builtin Quick
   , revisedDescription: md @
     "Invoke the furlong above this one, as a monad."
   }
-builtin (Single LittleCCedilla) = Just $ Builtin Quick
+builtin (Single LittleCCedilla) = Just $ Builtin (Quick [])
   { mnemonic: Nothing
   , keywords: ["last", "helper", "furlong"]
   , originalDescription: md @
@@ -72,7 +72,7 @@ builtin (Single LittleCCedilla) = Just $ Builtin Quick
   , revisedDescription: md @
     "Invoke the furlong above this one, as a dyad."
   }
-builtin (Single BigEnye) = Just $ Builtin Quick
+builtin (Single BigEnye) = Just $ Builtin (Quick [])
   { mnemonic: Nothing
   , keywords: ["next", "helper", "furlong"]
   , originalDescription: md @
@@ -80,7 +80,7 @@ builtin (Single BigEnye) = Just $ Builtin Quick
   , revisedDescription: md @
     "Invoke the furlong below this one, as a monad."
   }
-builtin (Single LittleEnye) = Just $ Builtin Quick
+builtin (Single LittleEnye) = Just $ Builtin (Quick [])
   { mnemonic: Nothing
   , keywords: ["next", "helper", "furlong"]
   , originalDescription: md @
@@ -88,45 +88,45 @@ builtin (Single LittleEnye) = Just $ Builtin Quick
   , revisedDescription: md @
     "Invoke the furlong below this one, as a dyad."
   }
-builtin (Single Pound) = Just $ Builtin Quick
+builtin (Single Pound) = Just $ Builtin (Quick ["n"])
   { mnemonic: Nothing
   , keywords: ["index", "at", "constant", "furlong"]
   , originalDescription: md @
     "Link at index n as a nilad."
   , revisedDescription: md @
-    "Invoke the (non-main) furlong at the given index from the top, as a nilad."
+    "Invoke the (non-main) furlong at index `n` from the top, as a nilad."
   }
-builtin (Single BigLOverdot) = Just $ Builtin Quick
+builtin (Single BigLOverdot) = Just $ Builtin (Quick ["n"])
   { mnemonic: Nothing
   , keywords: ["index", "at", "helper", "furlong"]
   , originalDescription: md @
     "Link at index n as a monad."
   , revisedDescription: md @
-    "Invoke the (non-main) furlong at the given index from the top, as a monad."
+    "Invoke the (non-main) furlong at index `n` from the top, as a monad."
   }
-builtin (Single LittleLOverdot) = Just $ Builtin Quick
+builtin (Single LittleLOverdot) = Just $ Builtin (Quick ["n"])
   { mnemonic: Nothing
   , keywords: ["index", "at", "helper", "furlong"]
   , originalDescription: md @
     "Link at index n as a dyad."
   , revisedDescription: md @
-    "Invoke the (non-main) furlong at the given index from the top, as a dyad."
+    "Invoke the (non-main) furlong at index `n` from the top, as a dyad."
   }
-builtin (Single BrokenBar) = Just $ Builtin Quick
+builtin (Single BrokenBar) = Just $ Builtin (Quick ["link", "indices"])
   { mnemonic: Just "sparse"
   , keywords: ["mask"]
   , originalDescription: md @
     "Apply link to items at specific indices."
   , revisedDescription: md @
-    "Apply link, then mask resulting items into original left argument at given indices."
+    "Apply `link`, then mask resulting items into original left argument at `indices`."
   }
-builtin (Single Lcxe) = Just $ Builtin Quick
+builtin (Single Lcxe) = Just $ Builtin (Quick ["link", "repetitions"])
   { mnemonic: Nothing
   , keywords: ["repeat", "loop", "iterate"]
   , originalDescription: md @
     "Repeat n times."
   , revisedDescription: fibLoop $ md @
-    "Iterate the given number of times."
+    "Iteratively invoke `link` on its result `n` times."
   }
 builtin _ = Nothing
 
