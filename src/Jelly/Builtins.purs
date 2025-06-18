@@ -5,7 +5,8 @@ module Jelly.Builtins
   , Adicity(..)
   , QuickArg(..)
   , QuickArgsFormatter
-  , formatQuickArgs
+  , formatCompact
+  , formatVerbose
   , builtin
   , stringTerminator
   ) where
@@ -48,17 +49,27 @@ data QuickArg
   | SemiOptional String
   | Varargs String
 
-type QuickArgsFormatter = forall f. Foldable f => f QuickArg -> BuiltinForm -> String
+type QuickArgsFormatter a = forall f. Foldable f => f QuickArg -> BuiltinForm -> a
 
 -- yeah whatever this may as well live here for now at least
-originalFormat :: QuickArgsFormatter
-originalFormat args quick = foldMap format' args <> show quick
+formatCompact :: QuickArgsFormatter String
+formatCompact args quick = foldMap format' args <> show quick
   where
   format' :: QuickArg -> String
   format' (Q s) = "<" <> s <> ">"
-  format' (Q s) = "<" <> s <> ">"
-  format' (Q s) = "<" <> s <> ">"
-  format' (Q s) = "<" <> s <> ">"
+  format' (OptionalNilad s) = "<" <> s <> ">??"
+  format' (SemiOptional s) = "<" <> s <> ">?"
+  format' (Varargs s) = "<" <> s <> "...>"
+
+-- TODO: make this Markdown (later!!!)
+formatVerbose :: QuickArgsFormatter String
+formatVerbose args quick = foldMap format' args <> show quick
+  where
+  format' :: QuickArg -> String
+  format' (Q s) = "__" <> s <> "__ "
+  format' (OptionalNilad s) = "[__" <> s <> "__ *only if niladic*] "
+  format' (SemiOptional s) = "[__" <> s <> "__ *or last program argument*] "
+  format' (Varargs s) = "__" <> s <> "__... "
 
 fibLoop :: Markdown -> Markdown
 fibLoop desc = desc <> (md @" If dyadic, the right argument to each subsequent iteration is the left argument to the previous iteration.")
