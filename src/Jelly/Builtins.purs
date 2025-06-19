@@ -275,7 +275,7 @@ builtin (Single BigFHook) = Just $ Builtin (Quick [Q "link"])
   , originalDescription: md @
     "Check if the left argument is equal to the result."
   , revisedDescription: md @
-    "Test whether or not the result of `link` is equal to the left argument."
+    "Test whether or not the result of `link` is equal to the left argument. Always returns a boolean scalar."
   }
 builtin (Single SuperPlus) = Just $ Builtin (Quick [Q "link"])
   { mnemonic: "duplicate"
@@ -284,6 +284,38 @@ builtin (Single SuperPlus) = Just $ Builtin (Quick [Q "link"])
     "Duplicates the previous link."
   , revisedDescription: md @
     "Push `link` twice to the chain. Does *not* peek; will pop and subordinate a previous chain if needed."
+  }
+builtin (Single At) = Just $ Builtin (Quick [Q "dyad"])
+  { mnemonic: "swap"
+  , keywords: ["swap", "commute", "mirror", "switch", "reverse"]
+  , originalDescription: md @
+    "Swaps operands."
+  , revisedDescription: md @
+    "Evaluate `dyad` with the right argument on the left and vice versa."
+  }
+builtin (Single At) = Just $ Builtin (Quick [Q "dyad"])
+  { mnemonic: "self"
+  , keywords: ["self", "selfie", "repeat"]
+  , originalDescription: md @
+    "Make a monad from a dyad by repeating the argument."
+  , revisedDescription: md @
+    "Evaluate `dyad` with the monadic argument on the left and right."
+  }
+builtin (Single DoubleQuote) = Just $ Builtin (Quick [Q "dyad"])
+  { mnemonic: "zipwith"
+  , keywords: ["zipwith", "zip", "corresponding", ]
+  , originalDescription: md @
+    "Make a monad from a dyad by repeating the argument."
+  , revisedDescription: md @
+    "Evaluate `dyad` with the monadic argument on the left and right."
+  }
+builtin (Single SingleQuote) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "flat"
+  , keywords: ["flat", "spawn", "table", "jank"]
+  , originalDescription: md @
+    "For monads, flat. For dyad, spawn."
+  , revisedDescription: md @
+    "Attempt to suppress vectorization for `link`. Use at your own risk."
   }
 
 -- SYNTAX --
