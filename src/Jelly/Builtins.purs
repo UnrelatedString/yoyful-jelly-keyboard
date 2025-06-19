@@ -365,6 +365,22 @@ builtin (Single BigNHook) = Just $ Builtin (Quick [Varargs "links"])
   , revisedDescription: md @
     "Map `links` over overlapping pairs of adjacent elements, on the left and right for a single dyad, or as a list for a monadic chain (grouped with arbitrarily many trailing nilads)."
   }
+builtin (Single BigPHook) = Just $ Builtin (Quick [Q "link", OptionalNilad "nilad"])
+  { mnemonic: "prefixes"
+  , keywords: ["prefix", "scan", "cumulative"]
+  , originalDescription: md @
+    "Map a link over prefixes, and if given a `<nilad>`, overlapping infixes if positive, or the overlapping outfixes of abs(`<nilad>`) if negative."
+  , revisedDescription: md @
+    "Map `link` over subsequences of the left argument: prefixes if no `nilad`, length-`nilad` contiguous subsequences if non-negative `nilad`, and the complements of length-`-nilad` contiguous subsequences if negative `nilad`."
+  }
+builtin (Single LittleKHook) = Just $ Builtin (Quick [Q "monad"])
+  { mnemonic: "key"
+  , keywords: ["key", "group"]
+  , originalDescription: md @
+    "Key. Map a link over the groups formed by identical items."
+  , revisedDescription: md @
+    "Group the elements of the right argument by the corresponding values from the left argument, in the order of their first occurrences, then map `monad` over the resulting groups. Can secretly take an optional nilad argument which is completely ignored."
+  }
 
 -- SYNTAX --
 
@@ -375,7 +391,7 @@ builtin _ = Nothing
 stringTerminator :: Jel -> Maybe Builtin'
 stringTerminator OpenGuillemet = Just
   { mnemonic: "termUnimpl"
-  , keywords: ["string", "plain", "verbatim", "unimplemented", "dead"]
+  , keywords: ["string", "plain", "verbatim", "unimplemented", "dead", "redundant"]
   , originalDescription: md @
     "[No original description -- not an intentional builtin]"
   , revisedDescription: md @

@@ -1111,6 +1111,7 @@ data BuiltinForm
   | A2 Jel
   | O1 Jel
   | O2 Jel
+  | DQ Jel
 
 builtinPrefix :: BuiltinForm -> Maybe Jel
 builtinPrefix (Single _) = Nothing
@@ -1119,6 +1120,7 @@ builtinPrefix (A1 _) = Just BigAsc
 builtinPrefix (A2 _) = Just LittleAsc
 builtinPrefix (O1 _) = Just BigOE
 builtinPrefix (O2 _) = Just LittleOE
+builtinPrefix (DQ _) = Just BigEth
 
 builtinMainChar :: BuiltinForm -> Jel
 builtinMainChar (Single c) = c
@@ -1127,6 +1129,7 @@ builtinMainChar (A1 c) = c
 builtinMainChar (A2 c) = c
 builtinMainChar (O1 c) = c
 builtinMainChar (O2 c) = c
+builtinMainChar (DQ c) = c
 
 -- for collation in tooltips. am I even using "collation" right
 foldVariants :: forall a. Semigroup a => (BuiltinForm -> a) -> Jel -> a
