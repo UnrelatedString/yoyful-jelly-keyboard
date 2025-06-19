@@ -303,7 +303,7 @@ builtin (Single At) = Just $ Builtin (Quick [Q "dyad"])
   }
 builtin (Single DoubleQuote) = Just $ Builtin (Quick [Q "dyad"])
   { mnemonic: "zipwith"
-  , keywords: ["zipwith", "zip", "corresponding", ]
+  , keywords: ["zipwith", "zip", "corresponding", "pairs"]
   , originalDescription: md @
     "Make a monad from a dyad by repeating the argument."
   , revisedDescription: md @
@@ -316,6 +316,54 @@ builtin (Single SingleQuote) = Just $ Builtin (Quick [Q "link"])
     "For monads, flat. For dyad, spawn."
   , revisedDescription: md @
     "Attempt to suppress vectorization for `link`. Use at your own risk."
+  }
+builtin (Single LittleThorn) = Just $ Builtin (Quick [Q "dyad"])
+  { mnemonic: "table"
+  , keywords: ["table", "product", "outer", "cartesian", "each", "pairs"]
+  , originalDescription: md @
+    "Outer product/table."
+  , revisedDescription: md @
+    "Map `dyad` over the left argument, mapped over the right argument."
+  }
+builtin (Single OpenBrace) = Just $ Builtin (Quick [Q "monad"])
+  { mnemonic: "ofLeft"
+  , keywords: ["left", "const", "ignore"]
+  , originalDescription: md @
+    "Turn a monad into a dyad. Uses the left argument."
+  , revisedDescription: md @
+    "Turn a monad into a dyad which ignores the right argument."
+  }
+builtin (Single OpenBrace) = Just $ Builtin (Quick [Q "monad"])
+  { mnemonic: "ofRight"
+  , keywords: ["right", "const", "ignore"]
+  , originalDescription: md @
+    "Turn a monad into a dyad. Uses the right argument."
+  , revisedDescription: md @
+    "Turn a monad into a dyad which ignores the left argument."
+  }
+builtin (Single Euro) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "each"
+  , keywords: ["each", "map", "for"]
+  , originalDescription: md @
+    "Each. Map a link over its left argument."
+  , revisedDescription: md @
+    "Map `link` over the left argument."
+  }
+builtin (Single BigThorn) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "sortBy"
+  , keywords: ["sort", "key", "grade"]
+  , originalDescription: md @
+    "Sort by some key function."
+  , revisedDescription: md @
+    "Sort the left argument by the result of `link` on each of its elements."
+  }
+builtin (Single BigNHook) = Just $ Builtin (Quick [Varargs "links"])
+  { mnemonic: "neighbors"
+  , keywords: ["neighbor", "pairs", "window", "adjacent"]
+  , originalDescription: md @
+    "Apply a dyadic link or a monadic chain for all pairs of neighboring elements."
+  , revisedDescription: md @
+    "Map `links` over overlapping pairs of adjacent elements, on the left and right for a single dyad, or as a list for a monadic chain (grouped with arbitrarily many trailing nilads)."
   }
 
 -- SYNTAX --
