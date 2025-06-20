@@ -84,6 +84,10 @@ quickchainLCC n n' a = Builtin (Quick [Varargs "links"])
     "Group at least " <> n' <> " links into a " <> adicNoun a <> ", consuming more for every nilad followed by a monad or by dyad-nilad pairs."
   }
 
+-- not even bothering to make this one futureproof because it needs a way to actually put something inside a format lol
+noteAlias :: BuiltinForm -> Markdown -> Markdown
+noteAlias form desc = desc <> " (Has alias `" <> show form <> "`.)"
+
 builtin :: BuiltinForm -> Maybe Builtin
 
 -- SINGLE BYTE NILADS --
@@ -106,7 +110,7 @@ builtin :: BuiltinForm -> Maybe Builtin
 
 builtin (Single Copyright) = Just $ Builtin (Quick [Q "link"])
   { mnemonic: "copy"
-  , keywords: []
+  , keywords: ["copy", "register", "set", "state", "impure"]
   , originalDescription: md @
     "Copy link result to register (`®` atom to retrieve)."
   , revisedDescription: md @
@@ -380,6 +384,30 @@ builtin (Single LittleKHook) = Just $ Builtin (Quick [Q "monad"])
     "Key. Map a link over the groups formed by identical items."
   , revisedDescription: md @
     "Group the elements of the right argument by the corresponding values from the left argument, in the order of their first occurrences, then map `monad` over the resulting groups. Can secretly take an optional nilad argument which is completely ignored."
+  }
+builtin (Single LittleRTail) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "register"
+  , keywords: ["register", "retrieve", "restore", "copy", "set", "state", "impure"]
+  , originalDescription: md @
+    "Register. Apply link to `®` then copy to the register and return the result."
+  , revisedDescription: md @
+    "Promote the register's current value to the left argument of `link`, then copy the result to the register."
+  }
+builtin (Single LittleTHook) = Just $ Builtin (Quick [Varargs "links", OptionalNilad "nilad"])
+  { mnemonic: "tie"
+  , keywords: ["tie", "cycle", "alternate", "flip-flop", "toggle", "state", "impure"]
+  , originalDescription: md @
+    "Tie. Cycle through a number of (default 2) links each time called."
+  , revisedDescription: md @
+    "Evaluate as each one of `links` in order on each subsequent call. Groups `nilad` links, or two by default."
+  }
+builtin (Single BigMHook) = Just $ Builtin (Quick [Q "dyad"])
+  { mnemonic: "rEach"
+  , keywords: ["each", "map", "for", "dyad", "right", "flip"]
+  , originalDescription: md @
+    "Each (alias for `Ð€`). Map a link over its right argument."
+  , revisedDescription: md @
+    "Map `dyad` over the right argument."
   }
 
 -- SYNTAX --
