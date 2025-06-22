@@ -297,7 +297,7 @@ builtin (Single At) = Just $ Builtin (Quick [Q "dyad"])
   , revisedDescription: md @
     "Evaluate `dyad` with the right argument on the left and vice versa."
   }
-builtin (Single At) = Just $ Builtin (Quick [Q "dyad"])
+builtin (Single Backtick) = Just $ Builtin (Quick [Q "dyad"])
   { mnemonic: "self"
   , keywords: ["self", "selfie", "repeat"]
   , originalDescription: md @
@@ -337,7 +337,7 @@ builtin (Single OpenBrace) = Just $ Builtin (Quick [Q "monad"])
   , revisedDescription: md @
     "Turn a monad into a dyad which ignores the right argument."
   }
-builtin (Single OpenBrace) = Just $ Builtin (Quick [Q "monad"])
+builtin (Single CloseBrace) = Just $ Builtin (Quick [Q "monad"])
   { mnemonic: "ofRight"
   , keywords: ["right", "const", "ignore"]
   , originalDescription: md @
@@ -406,8 +406,112 @@ builtin (Single BigMHook) = Just $ Builtin (Quick [Q "dyad"])
   , keywords: ["each", "map", "for", "dyad", "right", "flip"]
   , originalDescription: md @
     "Each (alias for `Ð€`). Map a link over its right argument."
-  , revisedDescription: md @
+  , revisedDescription: noteAlias (DQ Euro) $ md @
     "Map `dyad` over the right argument."
+  }
+builtin (DQ Lcxe) = Just $ Builtin (Quick [Q "link", SemiOptional "repetitions"])
+  { mnemonic: "repeats"
+  , keywords: ["repeat", "loop", "iterate", "cumulative", "intermediate"]
+  , originalDescription: md @
+    "Like `¡`. Collects all intermediate results."
+  , revisedDescription: fibLoop $ md @
+    "Like `¡`. Collects all intermediate results."
+  }
+builtin (DQ Euq) = Just $ Builtin (Quick [Q "body", Q "condition"])
+  { mnemonic: "whiles"
+  , keywords: ["while", "repeat", "loop", "iterate", "conditional", "cumulative", "intermediate"]
+  , originalDescription: md @
+    "Like `¿`. Collects all intermediate results."
+  , revisedDescription: fibLoop $ md @
+    "Like `¿`. Collects all intermediate results."
+  }
+builtin (DQ BigPHook) = Just $ Builtin (Quick [Q "link", OptionalNilad "nilad"])
+  { mnemonic: "suffixes"
+  , keywords: ["suffix", "scan", "cumulative"]
+  , originalDescription: md @
+    "Map a link over suffixes, and if given a `<nilad>`, non-overlapping infixes if positive, or the non-overlapping outfixes of abs(`<nilad>`) if negative."
+  , revisedDescription: md @
+    "Map `link` over subsequences of the left argument: suffixes if no `nilad`, non-overlapping length-`nilad` contiguous subsequences if non-negative `nilad`, and the complements of non-overlapping length-`-nilad` contiguous subsequences if negative `nilad`."
+  }
+builtin (Single BigCHook) = Just $ Builtin (Quick [Q "condition"])
+  { mnemonic: "filter"
+  , keywords: ["filter", "keep", "exclude", "refine"]
+  , originalDescription: md @
+    "Filter (alias for `Ðf`). Keep all items that satisfy a condition."
+  , revisedDescription: noteAlias (DQ LittleF) $ md @
+    "Filter to only the items of the left argument which satisfy `condition`."
+  }
+builtin (DQ LittleFOverdot) = Just $ Builtin (Quick [Q "condition"])
+  { mnemonic: "discard"
+  , keywords: ["discard", "filter", "keep", "exclude", "refine"]
+  , originalDescription: md @
+    "Filter. Discard all items that satisfy a condition."
+  , revisedDescription: md @
+    "Filter out all items of the left argument which satisfy `condition`."
+  }
+builtin (DQ BigL) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "fix"
+  , keywords: ["loop", "repeat", "iterate", "fix", "fixed", "point", "cycle"]
+  , originalDescription: md @
+    "Loop. Repeat until the results are no longer unique."
+  , revisedDescription: fibLoop $ md @
+    "Iteratively invoke `link` on its result until a cycle is reached."
+  }
+builtin (Single BigTHook) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "trawl"
+  , keywords: ["loop", "repeat", "iterate", "fix", "fixed", "point", "cycle"]
+  , originalDescription: md @
+    "Like `ÐL` (alias for `ÐĿ`). Collects all intermediate results."
+  , revisedDescription: md @
+    "Iteratively invoke `link` on its result until a cycle is reached, collecting all intermediate results. If dyadic, reuses the same right argument on every iteration."
+  }
+builtin (DQ BigLOverdot) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "trawlFib"
+  , keywords: ["loop", "repeat", "iterate", "fix", "fixed", "point", "cycle"]
+  , originalDescription: md @
+    "Like `ÐL` (alias for `ÐĿ`). Collects all intermediate results."
+  , revisedDescription: fibLoop $ md @
+    "Iteratively invoke `link` on its result until a cycle is reached, collecting all intermediate results."
+  }
+builtin (DQ BigLUnderdot) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "cycle"
+  , keywords: ["loop", "repeat", "iterate", "fix", "fixed", "point", "cycle"]
+  , originalDescription: md @
+    "Like `ÐL`. Collects all results in the loop."
+  , revisedDescription: fibLoop $ md @
+    "Iteratively invoke `link` on its result until a cycle is reached, returning every item in the cycle."
+  }
+builtin (DQ BigMUnderdot) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "mins"
+  , keywords: ["filter", "keep", "minimum", "minimal", "key"]
+  , originalDescription: md @
+    "Keep elements with minimal link value; `[e for e in z if link(e) == min(map(link, z))]`."
+  , revisedDescription: md @
+    "Filter the left argument to only elements which give minimal values of `link`."
+  }
+builtin (DQ BigMOverdot) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "maxes"
+  , keywords: ["filter", "keep", "maximum", "maximal", "key"]
+  , originalDescription: md @
+    "Keep elements with maximal link value; `[e for e in z if link(e) == max(map(link, z))]`."
+  , revisedDescription: md @
+    "Filter the left argument to only elements which give maximal values of `link`."
+  }
+builtin (DQ LittleE) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "even"
+  , keywords: ["even", "sparse", "mask", "select"]
+  , originalDescription: md @
+    "Apply link to even indices."
+  , revisedDescription: md @
+    "Apply `link`, then mask resulting items into original left argument at even indices."
+  }
+builtin (DQ LittleO) = Just $ Builtin (Quick [Q "link"])
+  { mnemonic: "odd"
+  , keywords: ["odd", "sparse", "mask", "select"]
+  , originalDescription: md @
+    "Apply link to odd indices."
+  , revisedDescription: md @
+    "Apply `link`, then mask resulting items into original left argument at odd indices."
   }
 
 -- SYNTAX --
