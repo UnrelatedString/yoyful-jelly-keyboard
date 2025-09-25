@@ -74,6 +74,24 @@ formatVerbose args quick = foldMap format' args <> show quick
 fibLoop :: Markdown -> Markdown
 fibLoop desc = desc <> (md @" If dyadic, the right argument to each subsequent iteration is the left argument to the previous iteration.")
 
+notABuiltinDesc :: Markdown
+notABuiltinDesc = md @"[No original description -- not an intentional builtin]"
+
+isUnused :: Jel -> Boolean
+isUnused LittleQ = true
+isUnused LittleU = true
+isUnused BigBHook = true
+isUnused BigKHook = true
+isUnused BigZHook = true
+isUnused LittleHHook = true
+isUnused LittleMHook = true
+isUnused LittleNHook = true
+isUnused LittlePHook = true
+isUnused LittleQHook = true
+isUnused LittleSHook = true
+isUnused LittleZHook = true
+isUnused _ = false
+
 quickchainLCC :: Int -> String -> Adicity -> Builtin
 quickchainLCC n n' a = Builtin (Quick [Varargs "links"])
   { mnemonic: "group" <> show n <> adicSuffix a
@@ -516,6 +534,18 @@ builtin (DQ LittleO) = Just $ Builtin (Quick [Q "link"])
 
 -- SYNTAX --
 
+-- UNUSED BYTES --
+
+-- not bloating multi bytes with this
+builtin (Single byte)
+  | isUnused byte = Just $ Builtin Syntax
+  { mnemonic: show byte
+  , keywords: ["unimplemented", "dead", "redundant", "newline", "unparseable"]
+  , originalDescription: notABuiltinDesc
+  , revisedDescription: md @
+    "Unparseable token. Equivalent to two newlines."
+  }
+
 builtin _ = Nothing
 
 -- separate from builtin so I don't have to build that "is this also a terminator??"
@@ -524,8 +554,7 @@ stringTerminator :: Jel -> Maybe Builtin'
 stringTerminator OpenGuillemet = Just
   { mnemonic: "termUnimpl"
   , keywords: ["string", "plain", "verbatim", "unimplemented", "dead", "redundant"]
-  , originalDescription: md @
-    "[No original description -- not an intentional builtin]"
+  , originalDescription: notABuiltinDesc
   , revisedDescription: md @
     "Terminate a plain string; equivalent to `”`."
   }
