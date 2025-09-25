@@ -110,6 +110,71 @@ builtin :: BuiltinForm -> Maybe Builtin
 
 -- SINGLE BYTE NILADS --
 
+builtin (Single Registered) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "register"
+  , keywords: ["register", "retrieve", "read"]
+  , originalDescription: md @
+    "Restore; retrieve the value of the register. Initially 0."
+  , revisedDescription: md @
+    "The value currently in the register."
+  }
+builtin (Single SuperThree) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "third"
+  , keywords: ["third", "first", "argument", "input", "constant", "hundred"]
+  , originalDescription: md @
+    "Return the third command line argument (first input) or 100."
+  , revisedDescription: md @
+    "First input to the program (third command line argument), or 100 if not given."
+  }
+builtin (Single SuperFour) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "fourth"
+  , keywords: ["fourth", "second", "argument", "input", "constant", "sixteen"]
+  , originalDescription: md @
+    "Return the fourth command line argument (second input) or 16."
+  , revisedDescription: md @
+    "Second input to the program (fourth command line argument), or 16 if not given."
+  }
+builtin (Single SuperFive) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "fifth"
+  , keywords: ["fifth", "third", "argument", "input", "constant", "ten"]
+  , originalDescription: md @
+    "Return the fifth command line argument (third input) or 10."
+  , revisedDescription: md @
+    "Third input to the program (fifth command line argument), or 10 if not given."
+  }
+builtin (Single SuperSix) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "sixth"
+  , keywords: ["sixth", "fourth", "argument", "input", "constant", "space"]
+  , originalDescription: md @
+    "Return the sixth command line argument (fourth input) or `' '`."
+  , revisedDescription: md @
+    "Fourth input to the program (sixth command line argument), or a space character if not given."
+  }
+builtin (Single SuperSeven) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "seventh"
+  , keywords: ["seventh", "fifth", "argument", "input", "constant", "newline"]
+  , originalDescription: md @
+    "Return the seventh command line argument (fifth input) or `'\n'`."
+  , revisedDescription: md @
+    "Fifth input to the program (seventh command line argument), or a newline character if not given."
+  }
+builtin (Single SuperEight) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "left0"
+  , keywords: ["eighth", "argument", "left", "constant", "empty", "list"]
+  , originalDescription: md @
+    "Return the link's left argument or `[]`."
+  , revisedDescription: md @ -- ...todo: actually figure out for sure what the context this works in is
+    "Left argument to the current link, or an empty list if it's niladic."
+  }
+builtin (Single SuperNine) = Just $ Builtin (Atom Niladic)
+  { mnemonic: "right0"
+  , keywords: ["ninth", "argument", "right", "constant", "byte", "256"]
+  , originalDescription: md @
+    "Return the link's right argument or `256`."
+  , revisedDescription: md @
+    "Right argument to the current link, or 256 if it isn't dyadic."
+  }
+
 -- SINGLE BYTE MONADS --
 
 -- SINGLE BYTE DYADS --
