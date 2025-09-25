@@ -163,8 +163,8 @@ builtin (Single SuperEight) = Just $ Builtin (Atom Niladic)
   , keywords: ["eighth", "argument", "left", "constant", "empty", "list"]
   , originalDescription: md @
     "Return the link's left argument or `[]`."
-  , revisedDescription: md @ -- ...todo: actually figure out for sure what the context this works in is
-    "Left argument to the current link, or an empty list if it's niladic."
+  , revisedDescription: md @
+    "Left argument to the deepest current chain-parsed link, or an empty list if it's niladic."
   }
 builtin (Single SuperNine) = Just $ Builtin (Atom Niladic)
   { mnemonic: "right0"
@@ -172,7 +172,7 @@ builtin (Single SuperNine) = Just $ Builtin (Atom Niladic)
   , originalDescription: md @
     "Return the link's right argument or `256`."
   , revisedDescription: md @
-    "Right argument to the current link, or 256 if it isn't dyadic."
+    "Right argument to the deepest current chain-parsed link, or 256 if it isn't dyadic."
   }
 
 -- SINGLE BYTE MONADS --
